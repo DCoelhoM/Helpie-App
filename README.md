@@ -1,2 +1,0 @@
-# Helpie-App
-PGI Project

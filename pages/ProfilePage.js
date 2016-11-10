@@ -12,6 +12,7 @@ import {
   MapView
 } from 'react-native';
 
+var LoginPage = require('./LoginPage.js');
 class ProfilePage extends Component {
   constructor(props) {
     super(props);
@@ -30,6 +31,10 @@ class ProfilePage extends Component {
               );
         
   }
+  _back () {
+      var navigator = this.props.navigator;
+      navigator.replace({id: 'LoginPage'});
+  }
   render () {
     return (
       <View style={styles.container}>
@@ -43,6 +48,10 @@ class ProfilePage extends Component {
         <MapView
           style={{height: 200, width: 200}}
           showsUserLocation={true}
+        />
+        <Button
+          onPress={this._back.bind(this)}
+          title='Back'
         />
       </View>
     );

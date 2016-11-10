@@ -8,12 +8,27 @@ import {
   Image,
   Button,
   TextInput,
-  Alert
+  Alert,
+  MapView
 } from 'react-native';
 
 class ProfilePage extends Component {
   constructor(props) {
     super(props);
+    this.state = {initialPosition: 'unknown'};
+  }
+  componentDidMount() {
+      navigator.geolocation.getCurrentPosition(
+              (position) => {
+                          var initialPosition = JSON.stringify(position);
+                                  this.setState({initialPosition});
+                                        
+              },
+                    (error) => alert(JSON.stringify(error)),
+                          {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+                              
+              );
+        
   }
   render () {
     return (
@@ -23,8 +38,12 @@ class ProfilePage extends Component {
           source={require('../img/logowhite.png')}
         />
         <Text>
-        {this.props.email}
+        {this.state.initialPosition}
         </Text>
+        <MapView
+          style={{height: 200, width: 200}}
+          showsUserLocation={true}
+        />
       </View>
     );
   }

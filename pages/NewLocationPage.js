@@ -9,7 +9,8 @@ import {
   Button,
   TextInput,
   Alert,
-  MapView
+  MapView,
+  AsyncStorage,
 } from 'react-native';
 
 var LocationsMenuPage = require('./LocationsMenuPage.js');
@@ -17,13 +18,20 @@ var LocationsMenuPage = require('./LocationsMenuPage.js');
 class NewLocationPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {initialPosition: 'unknown'};
+    this.state = {id: '', initialPosition: 'unknown', loc_name: '', latitude: '', longitude: ''};
+  }
+  componentWillMount(){
+    AsyncStorage.getItem('id').then((value) => {
+      this.setState({'id': value});
+    }).done();
   }
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         var initialPosition = JSON.stringify(position);
         this.setState({initialPosition});
+        this.setState({latitude: position.coords.latitude.toString()});
+        this.setState({longitude: position.coords.longitude.toString()});
 
       },
       (error) => alert(JSON.stringify(error)),
@@ -32,8 +40,38 @@ class NewLocationPage extends Component {
     );
   }
   _save () {
-    var navigator = this.props.navigator;
-    navigator.replace({id: 'LocationsMenuPage'});
+    const name_min_length = 3;
+    if (this.state.loc_name.length >= name_min_length){
+      try {
+        response = fetch('http://138.68.146.193:5000/savelocation', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: this.state.id,
+            name: this.state.loc_name,
+            longitude: this.state.longitude,
+            latitude: this.state.latitude,
+          })
+        }).then((response) => response.json())
+        .then((responseJson) => {
+          if (parseInt(responseJson.state) == 1){
+            Alert.alert('Location',responseJson.msg,[{text: 'Locations Menu', onPress: this._back.bind(this)},]);
+          } else {
+            Alert.alert('Location',responseJson.msg);
+            this._loc.setNativeProps({text: ''});
+          }
+        }).done();
+      }catch(error) {
+        console.error(error);
+      }
+    }
+    else {
+      Alert.alert("Name too short.");
+      this._loc.setNativeProps({text: ''});
+    }
   }
   _back () {
     var navigator = this.props.navigator;
@@ -55,7 +93,7 @@ class NewLocationPage extends Component {
       autoCapitalize={'none'}
       placeholder='Location Name'
       maxLength={16}
-      onChangeText={(text) => this.setState({email: text})}
+      onChangeText={(text) => this.setState({loc_name: text})}
       />
       </View>
 

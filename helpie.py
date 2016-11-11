@@ -1,0 +1,99 @@
+import MySQLdb
+import bcrypt
+import json
+from flask import *
+app = Flask(__name__)
+
+@app.route('/register', methods=["GET", "POST"])
+def register():
+    response = {}
+    if request.method == "POST":
+        data = json.loads(request.data)
+        email = data['email']
+        name = data['name']
+        password = data['password']
+        db = MySQLdb.connect("localhost","root","academica","helpie")
+        cursor = db.cursor()
+        sql_check_email = "SELECT * FROM users WHERE email='%s'" % (email)
+        try:
+            cursor.execute(sql_check_email)
+            n_results = cursor.rowcount
+            if n_results==0:
+                #encrypted_pw = bcrypt.hashpw(bpassword, bcrypt.gensalt(10))
+                #print encrypted_pw
+                sql_register = "INSERT INTO users(name, email, encrypted_password) VALUES('%s','%s','%s')" % (name,email,password)
+                try:
+                    cursor.execute(sql_register)
+                    db.commit()
+                    response = { "state" : 1, "msg" : "Registered with success."}
+                except:
+                    db.rollback()
+                    response = { "state" : 0, "msg" : "Error registering."}
+            else:
+               response = { "state" : 0, "msg" : "Email already registered."}
+        except:
+            response = { "state" : 0, "msg" : "Error accessing DB."}
+        db.close()
+        return json.dumps(response)
+    else:
+        response = {"state" : 0, "msg" : "Error."}
+        return json.dumps(response)
+
+
+@app.route('/savelocation', methods=["GET", "POST"])
+def savelocation():
+    response = {}
+    if request.method == "POST":
+        data = json.loads(request.data)
+        user_id = int(data['id'])
+        name = data['name']
+        longitude = float(data['longitude'])
+        latitude = float(data['latitude'])
+        db = MySQLdb.connect("localhost","root","academica","helpie")
+        cursor = db.cursor()
+        sql_loc = "INSERT INTO locations(user_id, name, longitude, latitude) VALUES(%i,'%s',%f,%f)" % (user_id,name,longitude,latitude)
+        try:
+            cursor.execute(sql_loc)
+            db.commit()
+            response = { "state" : 1, "msg" : "Location saved with success."}
+        except:
+            db.rollback()
+            response = { "state" : 0, "msg" : "Error accessing DB."}
+        db.close()
+        return json.dumps(response)
+    else:
+        response = {"state" : 0, "msg" : "Error."}
+        return json.dumps(response)
+
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    response = {}
+    if request.method == "POST":
+        data = json.loads(request.data)
+        email = data['email']
+        password = data['password']
+        db = MySQLdb.connect("localhost","root","academica","helpie")
+        cursor = db.cursor()
+        sql_check_email = "SELECT * FROM users WHERE email='%s'" % (email)
+        try:
+            cursor.execute(sql_check_email)
+            n_results = cursor.rowcount
+            if n_results==1:
+                result = cursor.fetchall()
+                if (result[0][3]==password):
+                    response = { "state" : 1, "msg" : "Login with success.", "id" : result[0][0], "name" : result[0][1], "email" : result[0][2]}
+                else:
+                    response = { "state" : 0, "msg" : "Wrong credentials."}
+            else:
+                response = { "state" : 0, "msg" : "Error user not found."}
+        except:
+            response = { "state" : 0, "msg" : "Error accessing DB."}
+        db.close()
+        return json.dumps(response)
+    else:
+        response = {"state" : 0, "msg" : "Error."}
+        return json.dumps(response)
+
+if __name__ == '__main__':
+        app.run(host= '0.0.0.0',threaded=True, debug=True)

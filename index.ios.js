@@ -1,8 +1,8 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
+* Sample React Native App
+* https://github.com/facebook/react-native
+* @flow
+*/
 
 import React, { Component } from 'react';
 import {
@@ -19,12 +19,12 @@ export default class Helpie extends Component {
   render() {
     return (
       <Navigator
-        initialRoute={{id: 'SplashPage', name: 'Index'}}
-        renderScene={this.renderScene.bind(this)}
-        configureScene={(route) => {
-          if (route.sceneConfig) {
-            return route.sceneConfig;
-          }
+      initialRoute={{id: 'SplashPage', name: 'Index'}}
+      renderScene={this.renderScene.bind(this)}
+      configureScene={(route) => {
+        if (route.sceneConfig) {
+          return route.sceneConfig;
+        }
         return Navigator.SceneConfigs.VerticalDownSwipeJump;
       }}/>
     );
@@ -34,26 +34,26 @@ export default class Helpie extends Component {
     if (routeId === 'SplashPage') {
       return (
         <SplashPage
-          navigator={navigator}/>
+        navigator={navigator}/>
       );
     }
     if (routeId === 'LoginPage') {
       return (
         <LoginPage
-          navigator={navigator}/>
+        navigator={navigator}/>
       );
     }
     if (routeId === 'RegisterPage') {
       return (
         <RegisterPage
-          navigator={navigator}/>
+        navigator={navigator}/>
       );
     }
     if (routeId === 'ProfilePage') {
       return (
         <ProfilePage
-          navigator={navigator}
-          email={navigator.email}/>
+        navigator={navigator}
+        email={navigator.email}/>
       );
     }
   }

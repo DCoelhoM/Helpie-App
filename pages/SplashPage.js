@@ -23,16 +23,16 @@ class SplashPage extends Component {
   render () {
     return (
       <View style={styles.container}>
-        <Image
-          style={{width:108 ,height: 136}}
-          source={require('../img/logowhite.png')}
-        />
-        <Text style={styles.appname}>
-          {'\nHelpie'}
-        </Text>
-        <Text style={styles.version}>
-          {'Version 0.1'}
-        </Text>
+      <Image
+      style={{width:108 ,height: 136}}
+      source={require('../img/logowhite.png')}
+      />
+      <Text style={styles.appname}>
+      {'\nHelpie'}
+      </Text>
+      <Text style={styles.version}>
+      {'Version 0.1'}
+      </Text>
 
       </View>
     );

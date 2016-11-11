@@ -19,40 +19,40 @@ class ProfilePage extends Component {
     this.state = {initialPosition: 'unknown'};
   }
   componentDidMount() {
-      navigator.geolocation.getCurrentPosition(
-              (position) => {
-                          var initialPosition = JSON.stringify(position);
-                                  this.setState({initialPosition});
-                                        
-              },
-                    (error) => alert(JSON.stringify(error)),
-                          {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-                              
-              );
-        
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        var initialPosition = JSON.stringify(position);
+        this.setState({initialPosition});
+
+      },
+      (error) => alert(JSON.stringify(error)),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+
+    );
+
   }
   _back () {
-      var navigator = this.props.navigator;
-      navigator.replace({id: 'LoginPage'});
+    var navigator = this.props.navigator;
+    navigator.replace({id: 'LoginPage'});
   }
   render () {
     return (
-      <View style={styles.container}>
-        <Image
-          style={{width:108 ,height: 136}}
-          source={require('../img/logowhite.png')}
-        />
-        <Text>
-        {this.state.initialPosition}
-        </Text>
-        <MapView
-          style={{height: 200, width: 200}}
-          showsUserLocation={true}
-        />
-        <Button
-          onPress={this._back.bind(this)}
-          title='Back'
-        />
+      <View style={styles.container} scrollEnabled={false}>
+      <Image
+      style={{width:108 ,height: 136}}
+      source={require('../img/logowhite.png')}
+      />
+      <Text>
+      {this.state.initialPosition}
+      </Text>
+      <MapView
+      style={{height: 200, width: 200}}
+      showsUserLocation={true}
+      />
+      <Button
+      onPress={this._back.bind(this)}
+      title='Back'
+      />
       </View>
     );
   }

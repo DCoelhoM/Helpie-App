@@ -9,15 +9,16 @@ import {
   Button,
 } from 'react-native';
 
-var MainMenuPage = require('./MainMenuPage.js');
+var RequestsMenuPage = require('./RequestsMenuPage.js');
 
-class RequestsMenuPage extends Component {
+class CreateRequestPage extends Component {
   constructor(props) {
     super(props);
   }
+
   _back () {
     var navigator = this.props.navigator;
-    navigator.replace({id: 'MainMenuPage'});
+    navigator.replace({id: 'RequestsMenuPage'});
   }
   render () {
     return (
@@ -41,7 +42,7 @@ class RequestsMenuPage extends Component {
   }
 }
 
-module.exports = RequestsMenuPage;
+module.exports = CreateRequestPage;
 
 const styles = StyleSheet.create({
   container: {

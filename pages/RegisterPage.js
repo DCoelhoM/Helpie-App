@@ -31,7 +31,7 @@ class RegisterPage extends Component {
         if (this.state.password.length >= pw_min_length){
           if (this.state.password == this.state.cpassword){
             try {
-              response = fetch('http://138.68.146.193:5000/', {
+              response = fetch('http://138.68.146.193:5000/register', {
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
@@ -48,11 +48,11 @@ class RegisterPage extends Component {
                   Alert.alert('Register',responseJson.msg,[{text: 'Login', onPress: this._login.bind(this)},]);
                 } else {
                   Alert.alert('Register',responseJson.msg);
+                  this._name.setNativeProps({text: ''});
+                  this._email.setNativeProps({text: ''});
+                  this._pw.setNativeProps({text: ''});
+                  this._cpw.setNativeProps({text: ''});
                 }
-                this._name.setNativeProps({text: ''});
-                this._email.setNativeProps({text: ''});
-                this._pw.setNativeProps({text: ''});
-                this._cpw.setNativeProps({text: ''});
               });
             }catch(error) {
               console.error(error);
@@ -161,19 +161,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#3197d6ff',
-  },
-  appname: {
-    fontFamily: 'HelveticaNeue-Bold',
-    fontSize: 30,
-    textAlign: 'center',
-    margin: 10,
-  },
-  version: {
-    fontFamily: 'Helvetica Neue',
-    fontSize: 10,
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
   inputContainer: {
     padding: 5,

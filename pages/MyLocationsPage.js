@@ -9,15 +9,16 @@ import {
   Button,
 } from 'react-native';
 
-var MainMenuPage = require('./MainMenuPage.js');
+var LocationsMenuPage = require('./LocationsMenuPage.js');
 
-class RequestsMenuPage extends Component {
+class MyLocationsPage extends Component {
   constructor(props) {
     super(props);
   }
+
   _back () {
     var navigator = this.props.navigator;
-    navigator.replace({id: 'MainMenuPage'});
+    navigator.replace({id: 'LocationsMenuPage'});
   }
   render () {
     return (
@@ -41,7 +42,7 @@ class RequestsMenuPage extends Component {
   }
 }
 
-module.exports = RequestsMenuPage;
+module.exports = MyLocationsPage;
 
 const styles = StyleSheet.create({
   container: {

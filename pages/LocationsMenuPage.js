@@ -11,9 +11,22 @@ import {
 
 var MainMenuPage = require('./MainMenuPage.js');
 
-class RequestsMenuPage extends Component {
+var NewLocationPage = require('./NewLocationPage.js');
+var MyLocationsPage = require('./MyLocationsPage.js');
+
+class LocationsMenuPage extends Component {
   constructor(props) {
     super(props);
+  }
+
+  _saveloc () {
+    var navigator = this.props.navigator;
+    navigator.replace({id: 'NewLocationPage'});
+  }
+
+  _myloc () {
+    var navigator = this.props.navigator;
+    navigator.replace({id: 'MyLocationsPage'});
   }
   _back () {
     var navigator = this.props.navigator;
@@ -31,6 +44,22 @@ class RequestsMenuPage extends Component {
       <View style={styles.btn}>
       <Button
       color='#3197d6ff'
+      onPress={this._saveloc.bind(this)}
+      title="Save Location"
+      />
+      </View>
+
+      <View style={styles.btn}>
+      <Button
+      color='#3197d6ff'
+      onPress={this._myloc.bind(this)}
+      title="My Locations"
+      />
+      </View>
+
+      <View style={styles.btn}>
+      <Button
+      color='#3197d6ff'
       onPress={this._back.bind(this)}
       title="Back"
       />
@@ -41,7 +70,7 @@ class RequestsMenuPage extends Component {
   }
 }
 
-module.exports = RequestsMenuPage;
+module.exports = LocationsMenuPage;
 
 const styles = StyleSheet.create({
   container: {

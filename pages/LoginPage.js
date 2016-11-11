@@ -13,7 +13,8 @@ import {
 } from 'react-native'
 
 var RegisterPage = require('./RegisterPage.js');
-var ProfilePage = require('./ProfilePage.js');
+
+var MainMenuPage = require('./MainMenuPage.js');
 
 class LoginPage extends Component {
   constructor(props) {
@@ -22,8 +23,32 @@ class LoginPage extends Component {
   }
   _signin () {
     var navigator = this.props.navigator;
-    navigator.email = this.state.email;
-    navigator.replace({id: 'ProfilePage'});
+    //navigator.email = this.state.email;
+    //navigator.replace({id: 'ProfilePage'});
+    try {
+      response = fetch('http://138.68.146.193:5000/login', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: this.state.email,
+          password: this.state.password,
+        })
+      }).then((response) => response.json())
+      .then((responseJson) => {
+        if (parseInt(responseJson.state) == 1){
+          Alert.alert('Login',responseJson.msg,[{text: 'Login', onPress: navigator.replace({id: 'MainMenuPage'})},]);
+        } else {
+          Alert.alert('Register',responseJson.msg);
+          this._email.setNativeProps({text: ''});
+          this._pw.setNativeProps({text: ''});
+        }
+      });
+    }catch(error) {
+      console.error(error);
+    }
   }
   _signup (){
     var navigator = this.props.navigator;
@@ -37,7 +62,9 @@ class LoginPage extends Component {
       source={require('../img/logowhite.png')}
       />
       <View style={styles.inputContainer}>
-      <TextInput style={styles.input}
+      <TextInput
+      ref={component => this._email = component}
+      style={styles.input}
       autoCapitalize={'none'}
       placeholder='E-mail'
       maxLength={32}
@@ -46,7 +73,9 @@ class LoginPage extends Component {
       </View>
 
       <View style={styles.inputContainer}>
-      <TextInput style={styles.input}
+      <TextInput
+      ref={component => this._pw = component}
+      style={styles.input}
       secureTextEntry={true}
       placeholder='Password'
       onChangeText={(text) => this.setState({password: text})}
@@ -82,19 +111,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#3197d6ff',
-  },
-  appname: {
-    fontFamily: 'HelveticaNeue-Bold',
-    fontSize: 30,
-    textAlign: 'center',
-    margin: 10,
-  },
-  version: {
-    fontFamily: 'Helvetica Neue',
-    fontSize: 10,
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
   inputContainer: {
     padding: 5,

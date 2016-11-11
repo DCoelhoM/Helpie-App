@@ -11,9 +11,21 @@ import {
 } from 'react-native';
 
 var SplashPage = require('./pages/SplashPage.js');
+
 var LoginPage = require('./pages/LoginPage.js');
 var RegisterPage = require('./pages/RegisterPage.js');
+var MainMenuPage = require('./pages/MainMenuPage.js');
+
 var ProfilePage = require('./pages/ProfilePage.js');
+var RequestsMenuPage = require('./pages/RequestsMenuPage.js');
+var LocationsMenuPage = require('./pages/LocationsMenuPage.js');
+
+var CreateRequestPage = require('./pages/CreateRequestPage.js');
+var NearbyRequestsPage = require('./pages/NearbyRequestsPage.js');
+var MyRequestsPage = require('./pages/MyRequestsPage.js');
+
+var NewLocationPage = require('./pages/NewLocationPage.js');
+var MyLocationsPage = require('./pages/MyLocationsPage.js');
 
 export default class Helpie extends Component {
   render() {
@@ -49,11 +61,58 @@ export default class Helpie extends Component {
         navigator={navigator}/>
       );
     }
+    if (routeId === 'MainMenuPage') {
+      return (
+        <MainMenuPage
+        navigator={navigator}/>
+      );
+    }
     if (routeId === 'ProfilePage') {
       return (
         <ProfilePage
-        navigator={navigator}
-        email={navigator.email}/>
+        navigator={navigator}/>
+      );
+    }
+    if (routeId === 'RequestsMenuPage') {
+      return (
+        <RequestsMenuPage
+        navigator={navigator}/>
+      );
+    }
+    if (routeId === 'CreateRequestPage') {
+      return (
+        <CreateRequestPage
+        navigator={navigator}/>
+      );
+    }
+    if (routeId === 'NearbyRequestsPage') {
+      return (
+        <NearbyRequestsPage
+        navigator={navigator}/>
+      );
+    }
+    if (routeId === 'MyRequestsPage') {
+      return (
+        <MyRequestsPage
+        navigator={navigator}/>
+      );
+    }
+    if (routeId === 'LocationsMenuPage') {
+      return (
+        <LocationsMenuPage
+        navigator={navigator}/>
+      );
+    }
+    if (routeId === 'NewLocationPage') {
+      return (
+        <NewLocationPage
+        navigator={navigator}/>
+      );
+    }
+    if (routeId === 'MyLocationsPage') {
+      return (
+        <MyLocationsPage
+        navigator={navigator}/>
       );
     }
   }

@@ -9,7 +9,7 @@ import {
   Button,
   TextInput,
   Alert,
-  MapView,
+  AsyncStorage,
 } from 'react-native'
 
 var RegisterPage = require('./RegisterPage.js');
@@ -21,10 +21,19 @@ class LoginPage extends Component {
     super(props);
     this.state = { email: '', password: ''  };
   }
+  componentWillMount() {
+      try {
+        AsyncStorage.getItem('login').then((value) => {
+          if (value=='true'){
+            var navigator = this.props.navigator;
+            navigator.replace({id: 'MainMenuPage'});
+          }
+        }).done();
+      }catch(error) {
+        console.error(error);
+      }
+  }
   _signin () {
-    var navigator = this.props.navigator;
-    //navigator.email = this.state.email;
-    //navigator.replace({id: 'ProfilePage'});
     try {
       response = fetch('http://138.68.146.193:5000/login', {
         method: 'POST',
@@ -39,13 +48,23 @@ class LoginPage extends Component {
       }).then((response) => response.json())
       .then((responseJson) => {
         if (parseInt(responseJson.state) == 1){
-          Alert.alert('Login',responseJson.msg,[{text: 'Login', onPress: navigator.replace({id: 'MainMenuPage'})},]);
+          try {
+            AsyncStorage.setItem('login','true');
+            AsyncStorage.setItem('id',responseJson.id.toString());
+            AsyncStorage.setItem('name',responseJson.name);
+            AsyncStorage.setItem('email',responseJson.email);
+          } catch (error) {
+            console.error(error);
+          }
+          //Alert.alert('Login',responseJson.msg,[{text: 'Login', onPress: navigator.replace({id: 'MainMenuPage'})},]);
+          var navigator = this.props.navigator;
+          navigator.replace({id: 'MainMenuPage'});
         } else {
           Alert.alert('Register',responseJson.msg);
           this._email.setNativeProps({text: ''});
           this._pw.setNativeProps({text: ''});
         }
-      });
+      }).done();
     }catch(error) {
       console.error(error);
     }

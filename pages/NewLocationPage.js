@@ -31,6 +31,10 @@ class NewLocationPage extends Component {
 
     );
   }
+  _save () {
+    var navigator = this.props.navigator;
+    navigator.replace({id: 'LocationsMenuPage'});
+  }
   _back () {
     var navigator = this.props.navigator;
     navigator.replace({id: 'LocationsMenuPage'});
@@ -38,13 +42,12 @@ class NewLocationPage extends Component {
   render () {
     return (
       <View style={styles.container} scrollEnabled={false}>
+
       <Image
       style={{width:108 ,height: 136}}
       source={require('../img/logowhite.png')}
       />
-      <Text>
-      {this.state.initialPosition}
-      </Text>
+
       <View style={styles.inputContainer}>
       <TextInput
       ref={component => this._loc = component}
@@ -55,11 +58,12 @@ class NewLocationPage extends Component {
       onChangeText={(text) => this.setState({email: text})}
       />
       </View>
+
       <MapView
       style={{height: 200, width: 200}}
       showsUserLocation={true}
       />
-      <View style={styles.btn}>
+
       <View style={styles.save}>
       <Button
       color='#3197d6ff'
@@ -67,6 +71,7 @@ class NewLocationPage extends Component {
       title="Save"
       />
       </View>
+
       <View style={styles.back}>
       <Button
       color='#3197d6ff'
@@ -74,7 +79,7 @@ class NewLocationPage extends Component {
       title="Back"
       />
       </View>
-      </View>
+
       </View>
     );
   }
@@ -93,22 +98,20 @@ const styles = StyleSheet.create({
     padding: 5,
     borderBottomWidth: 1,
     borderBottomColor: '#CCC',
+    marginBottom: 10,
   },
   input: {
     width: 200,
     height: 40,
   },
-  btn: {
-    marginTop: 10,
-    flexDirection: 'row',
-    height: 40,
-  },
-  signin: {
+  save: {
+    width: 200,
+    marginTop: 20,
     backgroundColor: '#FFF',
-    marginRight: 5,
   },
-  signup: {
-    backgroundColor: '#FFF',
-    marginLeft: 5,
-  }
+  back: {
+    width: 200,
+    marginTop: 20,
+    backgroundColor: '#095188',
+  },
 });

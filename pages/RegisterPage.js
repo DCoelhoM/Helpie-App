@@ -53,7 +53,7 @@ class RegisterPage extends Component {
                   this._pw.setNativeProps({text: ''});
                   this._cpw.setNativeProps({text: ''});
                 }
-              });
+              }).done();
             }catch(error) {
               console.error(error);
             }

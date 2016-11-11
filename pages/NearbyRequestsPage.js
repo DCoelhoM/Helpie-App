@@ -45,35 +45,17 @@ class NearbyRequestsPage extends Component {
       <Text>
       {this.state.initialPosition}
       </Text>
-      <View style={styles.inputContainer}>
-      <TextInput
-      ref={component => this._loc = component}
-      style={styles.input}
-      autoCapitalize={'none'}
-      placeholder='Location Name'
-      maxLength={16}
-      onChangeText={(text) => this.setState({email: text})}
-      />
-      </View>
       <MapView
       style={{height: 200, width: 200}}
       showsUserLocation={true}
       />
-      <View style={styles.btn}>
-      <View style={styles.save}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._save.bind(this)}
-      title="Save"
-      />
-      </View>
+
       <View style={styles.back}>
       <Button
       color='#3197d6ff'
       onPress={this._back.bind(this)}
       title="Back"
       />
-      </View>
       </View>
       </View>
     );
@@ -89,26 +71,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#3197d6ff',
   },
-  inputContainer: {
-    padding: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCC',
-  },
-  input: {
+  back: {
     width: 200,
-    height: 40,
+    marginTop: 20,
+    backgroundColor: '#095188',
   },
-  btn: {
-    marginTop: 10,
-    flexDirection: 'row',
-    height: 40,
-  },
-  signin: {
-    backgroundColor: '#FFF',
-    marginRight: 5,
-  },
-  signup: {
-    backgroundColor: '#FFF',
-    marginLeft: 5,
-  }
 });

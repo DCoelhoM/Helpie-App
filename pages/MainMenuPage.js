@@ -7,9 +7,7 @@ import {
   Navigator,
   Image,
   Button,
-  TextInput,
-  Alert,
-  MapView
+  AsyncStorage,
 } from 'react-native';
 
 var LoginPage = require('./LoginPage.js');
@@ -21,7 +19,22 @@ var LocationsMenuPage = require('./LocationsMenuPage.js');
 class MainMenuPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {initialPosition: 'unknown'};
+    this.state = {id: '', name: '', email: ''};
+  }
+  componentWillMount(){
+    try {
+      AsyncStorage.getItem('id').then((value) => {
+        this.setState({'id': value});
+      }).done();
+      AsyncStorage.getItem('name').then((value) => {
+        this.setState({'name': value});
+      }).done();
+      AsyncStorage.getItem('email').then((value) => {
+        this.setState({'email': value});
+      }).done();
+    }catch(error) {
+      console.error(error);
+    }
   }
 
   _profile () {
@@ -41,6 +54,14 @@ class MainMenuPage extends Component {
   _logout () {
     var navigator = this.props.navigator;
     navigator.replace({id: 'LoginPage'});
+    try {
+      AsyncStorage.removeItem('login');
+      AsyncStorage.removeItem('id');
+      AsyncStorage.removeItem('name');
+      AsyncStorage.removeItem('email');
+    } catch (error) {
+      console.log(error);
+    }
   }
   render () {
     return (
@@ -50,6 +71,10 @@ class MainMenuPage extends Component {
       style={{width:108 ,height: 136}}
       source={require('../img/logowhite.png')}
       />
+
+      <Text>
+      {this.state.email}
+      </Text>
 
       <View style={styles.btn}>
       <Button
@@ -75,7 +100,7 @@ class MainMenuPage extends Component {
       />
       </View>
 
-      <View style={styles.btn}>
+      <View style={styles.logout}>
       <Button
       color='#3197d6ff'
       onPress={this._logout.bind(this)}

@@ -134,18 +134,19 @@ def deletelocation():
     if request.method == "POST":
         data = json.loads(request.data)
         loc_id = int(data['loc_id'])
-        user_id = int(data['user_id'])
         db = MySQLdb.connect("localhost","root","academica","helpie")
         cursor = db.cursor()
-        sql_check_email = "DELETE FROM locations WHERE id=%i AND user_id=%i" % (loc_id,user_id)
+        sql_check_email = "DELETE FROM locations WHERE id=%i" % (loc_id)
         try:
             cursor.execute(sql_check_email)
+            db.commit()
             response = {"state" : 1, "msg" : "Location deleted with success."}
         except:
             response = { "state" : 0, "msg" : "Error accessing DB."}
         db.close()
         return json.dumps(response)
     else:
+        db.rollback()
         response = {"state" : 0, "msg" : "Error."}
         return json.dumps(response)
 

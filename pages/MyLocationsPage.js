@@ -19,60 +19,66 @@ class MyLocationsPage extends Component {
     super(props);
     this.state = {id: '',annotations: []};
   }
-  componentWillMount() {
-    try {
-      AsyncStorage.getItem('id').then((value) => {
-        this.setState({id: value});
-        try {
-          response = fetch('http://138.68.146.193:5000/mylocations', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              user_id: this.state.id,
-            })
-          }).then((response) => response.json())
-          .then((responseJson) => {
-            var loc_points = this.state.annotations.slice();
-            if (parseInt(responseJson.state) == 1){
-              responseJson.locations.forEach(function(locations) {
-                id = locations.id;
-                name = locations.name;
-                lon = parseFloat(locations.longitude);
-                lat = parseFloat(locations.latitude);
-                point = {longitude: lon,latitude: lat,title: name, onFocus: () =>
-                  Alert.alert(
-                    "Location",
-                    locations.name,
-                    [
-                      {text: 'OK'},
-                      {text: 'Delete', onPress: () => this._deletelocation.bind(locations.id) , style: 'destructive'},
-                    ]
-                  )}
-                loc_points.push(point);
-              });
-              this.setState({annotations : loc_points});
-            } else {
-              Alert.alert('No locations found');
-            }
-          }).done();
-        }catch(error) {
-          console.error(error);
-        }
-      }).done();
-    }catch(error) {
-      console.error(error);
-    }
-  }
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.annotations != nextState.annotations){
       return true;
     }
     return false;
   }
-  _deletelocation (id){
+  componentWillMount() {
+    try {
+      AsyncStorage.getItem('id').then((value) => {
+        this.setState({id: value});
+        this.loadlocations();
+      }).done();
+    }catch(error) {
+      console.error(error);
+    }
+  }
+  loadlocations(){
+    try {
+      response = fetch('http://138.68.146.193:5000/mylocations', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: this.state.id,
+        })
+      }).then((response) => response.json())
+      .then((responseJson) => {
+        var loc_points = this.state.annotations.slice();
+        console.log("1 ------->");
+        console.log(this.state.annotations);
+        if (parseInt(responseJson.state) == 1){
+          responseJson.locations.forEach((location) => {
+            point = {longitude: parseFloat(location.longitude),latitude: parseFloat(location.latitude),title: location.name, onFocus: () => {this.infolocation(location.name,location.id)}};
+            loc_points.push(point);
+          });
+          this.setState({annotations : loc_points});
+          console.log("2 ------->");
+          console.log(this.state.annotations);
+        } else {
+          Alert.alert('No locations found');
+        }
+      }).done();
+    }catch(error) {
+      console.error(error);
+    }
+  }
+  infolocation(name,id){
+    Alert.alert(
+      "Location",
+      name,
+      [
+        {text: 'OK'},
+        {text: 'Delete', onPress: () => {this.deletelocation(id)}, style: 'destructive'},
+      ]
+    );
+  }
+
+  deletelocation(id){
     try {
       response = fetch('http://138.68.146.193:5000/deletelocation', {
         method: 'POST',
@@ -82,15 +88,13 @@ class MyLocationsPage extends Component {
         },
         body: JSON.stringify({
           loc_id: id,
-          user_id: this.state.id,
         })
       }).then((response) => response.json())
       .then((responseJson) => {
-        if (parseInt(responseJson.state) == 1){
-          Alert.alert(responseJson.msg);
-        } else {
-          Alert.alert('No locations found');
+        if(parseInt(responseJson.state) == 1){
+          this.loadlocations();
         }
+        Alert.alert(responseJson.msg);
       }).done();
     }catch(error) {
       console.error(error);

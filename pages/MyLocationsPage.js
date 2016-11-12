@@ -49,15 +49,18 @@ class MyLocationsPage extends Component {
       }).then((response) => response.json())
       .then((responseJson) => {
         var loc_points = this.state.annotations.slice();
-        console.log("1 ------->");
-        console.log(this.state.annotations);
+        this.setState({
+          annotations: this.state.annotations.filter(a => false)
+        });
         if (parseInt(responseJson.state) == 1){
           responseJson.locations.forEach((location) => {
             point = {longitude: parseFloat(location.longitude),latitude: parseFloat(location.latitude),title: location.name, onFocus: () => {this.infolocation(location.name,location.id)}};
             loc_points.push(point);
           });
-          this.setState({annotations : loc_points});
-          console.log("2 ------->");
+          this.state.annotations=loc_points;
+          this.forceUpdate();
+          //TODO
+          console.log("LALAL2");
           console.log(this.state.annotations);
         } else {
           Alert.alert('No locations found');

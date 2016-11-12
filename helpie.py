@@ -151,5 +151,36 @@ def deletelocation():
         return json.dumps(response)
 
 
+@app.route('/createrequest', methods=["GET", "POST"])
+def savelocation():
+    response = {}
+    if request.method == "POST":
+        data = json.loads(request.data)
+        user_id = int(data['user_id'])
+        title = data['title']
+        desc = data['description']
+        loc_id = data['loc_id']
+        deadline = int(data['deadline'])
+        #from datetime import datetime
+        #datetime_object = datetime.strptime(deadline,'%Y-%m-%d %H:%M')
+        #string = datetime.strftime('%Y-%m-%d %H:%M')
+        db = MySQLdb.connect("localhost","root","academica","helpie")
+        cursor = db.cursor()
+        sql_loc = "INSERT INTO requests(owner_id, title, description, loc_id, deadline) VALUES(%i,'%s','%s',%i,'%s')" % (user_id,desc,loc_id,deadline)
+        try:
+            cursor.execute(sql_loc)
+            db.commit()
+            response = { "state" : 1, "msg" : "Request created with success."}
+        except:
+            db.rollback()
+            response = { "state" : 0, "msg" : "Error accessing DB."}
+        db.close()
+        return json.dumps(response)
+    else:
+        response = {"state" : 0, "msg" : "Error."}
+        return json.dumps(response)
+
+
+
 if __name__ == '__main__':
         app.run(host= '0.0.0.0',threaded=True, debug=True)

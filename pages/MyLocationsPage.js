@@ -42,7 +42,16 @@ class MyLocationsPage extends Component {
                 name = locations.name;
                 lon = parseFloat(locations.longitude);
                 lat = parseFloat(locations.latitude);
-                loc_points.push({longitude: lon,latitude: lat,title: name, onFocus: () => _locationinfo.bind(this,name.id)});
+                point = {longitude: lon,latitude: lat,title: name, onFocus: () =>
+                  Alert.alert(
+                    "Location",
+                    locations.name,
+                    [
+                      {text: 'OK'},
+                      {text: 'Delete', onPress: () => this._deletelocation.bind(locations.id) , style: 'destructive'},
+                    ]
+                  )}
+                loc_points.push(point);
               });
               this.setState({annotations : loc_points});
             } else {
@@ -63,17 +72,6 @@ class MyLocationsPage extends Component {
     }
     return false;
   }
-  _locationinfo(name,id){
-    Alert.alert(
-      "Location",
-      name,
-      [
-        {text: 'OK'},
-        {text: 'Delete', onPress: () => this._deletelocation.bind(this,id) , style: 'destructive'},
-      ]
-    )
-  }
-
   _deletelocation (id){
     try {
       response = fetch('http://138.68.146.193:5000/deletelocation', {

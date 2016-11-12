@@ -40,32 +40,6 @@ def register():
         return json.dumps(response)
 
 
-@app.route('/savelocation', methods=["GET", "POST"])
-def savelocation():
-    response = {}
-    if request.method == "POST":
-        data = json.loads(request.data)
-        user_id = int(data['id'])
-        name = data['name']
-        longitude = float(data['longitude'])
-        latitude = float(data['latitude'])
-        db = MySQLdb.connect("localhost","root","academica","helpie")
-        cursor = db.cursor()
-        sql_loc = "INSERT INTO locations(user_id, name, longitude, latitude) VALUES(%i,'%s',%f,%f)" % (user_id,name,longitude,latitude)
-        try:
-            cursor.execute(sql_loc)
-            db.commit()
-            response = { "state" : 1, "msg" : "Location saved with success."}
-        except:
-            db.rollback()
-            response = { "state" : 0, "msg" : "Error accessing DB."}
-        db.close()
-        return json.dumps(response)
-    else:
-        response = {"state" : 0, "msg" : "Error."}
-        return json.dumps(response)
-
-
 @app.route('/login', methods=["GET", "POST"])
 def login():
     response = {}
@@ -94,6 +68,87 @@ def login():
     else:
         response = {"state" : 0, "msg" : "Error."}
         return json.dumps(response)
+
+
+@app.route('/savelocation', methods=["GET", "POST"])
+def savelocation():
+    response = {}
+    if request.method == "POST":
+        data = json.loads(request.data)
+        user_id = int(data['id'])
+        name = data['name']
+        longitude = float(data['longitude'])
+        latitude = float(data['latitude'])
+        db = MySQLdb.connect("localhost","root","academica","helpie")
+        cursor = db.cursor()
+        sql_loc = "INSERT INTO locations(user_id, name, longitude, latitude) VALUES(%i,'%s',%f,%f)" % (user_id,name,longitude,latitude)
+        try:
+            cursor.execute(sql_loc)
+            db.commit()
+            response = { "state" : 1, "msg" : "Location saved with success."}
+        except:
+            db.rollback()
+            response = { "state" : 0, "msg" : "Error accessing DB."}
+        db.close()
+        return json.dumps(response)
+    else:
+        response = {"state" : 0, "msg" : "Error."}
+        return json.dumps(response)
+
+@app.route('/mylocations', methods=["GET", "POST"])
+def mylocations():
+    response = {}
+    if request.method == "POST":
+        data = json.loads(request.data)
+        user_id = int(data['user_id'])
+        db = MySQLdb.connect("localhost","root","academica","helpie")
+        cursor = db.cursor()
+        sql_check_email = "SELECT * FROM locations WHERE user_id=%i" % (user_id)
+        try:
+            cursor.execute(sql_check_email)
+            n_results = cursor.rowcount
+            if n_results>0:
+                results = cursor.fetchall()
+                locations = []
+                for row in results:
+                    loc_id = row[0]
+                    name = row[2]
+                    longitude = row[3]
+                    latitude = row[4]
+                    locations.append({"id": loc_id, "name" : name, "longitude" : str(longitude), "latitude" : str(latitude)})
+                response = {"state" : 1, "locations" : locations}
+            else:
+                response = { "state" : 0, "msg" : "No locations found."}
+        except:
+            response = { "state" : 0, "msg" : "Error accessing DB."}
+        db.close()
+        return json.dumps(response)
+    else:
+        response = {"state" : 0, "msg" : "Error."}
+        return json.dumps(response)
+
+
+@app.route('/deletelocation', methods=["GET", "POST"])
+def deletelocation():
+    response = {}
+    if request.method == "POST":
+        data = json.loads(request.data)
+        loc_id = int(data['loc_id'])
+        user_id = int(data['user_id'])
+        db = MySQLdb.connect("localhost","root","academica","helpie")
+        cursor = db.cursor()
+        sql_check_email = "DELETE FROM locations WHERE id=%i AND user_id=%i" % (loc_id,user_id)
+        try:
+            cursor.execute(sql_check_email)
+            response = {"state" : 1, "msg" : "Location deleted with success."}
+        except:
+            response = { "state" : 0, "msg" : "Error accessing DB."}
+        db.close()
+        return json.dumps(response)
+    else:
+        response = {"state" : 0, "msg" : "Error."}
+        return json.dumps(response)
+
 
 if __name__ == '__main__':
         app.run(host= '0.0.0.0',threaded=True, debug=True)

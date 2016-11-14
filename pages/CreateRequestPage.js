@@ -10,18 +10,21 @@ import {
   Button,
   TextInput,
   Alert,
-  AsyncStorage
+  AsyncStorage,
+  TouchableHighlight
 } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import ModalDropdown from 'react-native-modal-dropdown';
 
-var RequestsMenuPage = require('./RequestsMenuPage.js');
+//var RequestsMenuPage = require('./RequestsMenuPage.js');
 
 class CreateRequestPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {id: '', locations: [], title: '', description: '', deadline: new Date(), loc_id: ''}
-  } componentWillMount() {
+    this.state = {id: '', locations: [], title: '', description: '', deadline: new Date(), loc_id: '', items: ''};
+    this.setState({items : '0'});
+  }
+  componentWillMount() {
     try {
       AsyncStorage.getItem('id').then((value) => {
         this.setState({id: value});
@@ -65,18 +68,46 @@ class CreateRequestPage extends Component {
     if (this.state.locations != nextState.locations){
       return true;
     }
+    if (this.state.items != nextState.items){
+      return true;
+    }
     return false;
   }
 
   onDateChange = (date) => {
     this.setState({deadline: date});
-  };
+  }
 
   _back () {
     var navigator = this.props.navigator;
     navigator.replace({id: 'RequestsMenuPage'});
   }
+  addItem(){
+    n = this.state.items;
+    n++;
+    this.setState({ items: n });
+  }
+  removeItem(){
+    n = this.state.items;
+    n--;
+    this.setState({ items: n });
+  }
   render () {
+    let rows = [];
+    for(let i=0; i<this.state.items;i++){
+      rows.push(
+        <View style={styles.inputContainer}>
+        <TextInput
+        //ref={component => this._title = component}
+        style={styles.input}
+        autoCapitalize={'none'}
+        placeholder={'Item '+(i+1)}
+        maxLength={32}
+        //onChangeText={(text) => this.setState({name: text})}
+        />
+        </View>
+      );
+    }
     return (
       <ScrollView  ref='scrollView' keyboardDismissMode='interactive' style={styles.scrollView} contentContainerStyle={styles.contentContainerStyle}>
       <View style={styles.container2}>
@@ -105,6 +136,19 @@ class CreateRequestPage extends Component {
       maxLength={256}
       onChangeText={(text) => this.setState({name: text})}
       />
+      </View>
+
+      <View style={styles.itemlist}>
+      <Text>Item List:</Text>
+      <TouchableHighlight onPress={ this.removeItem.bind(this) } style={styles.itemlist_button}>
+      <Text>-</Text>
+      </TouchableHighlight>
+      <TouchableHighlight onPress={ this.addItem.bind(this) } style={styles.itemlist_button}>
+      <Text>+</Text>
+      </TouchableHighlight>
+      </View>
+      <View style={styles.dropdown}>
+      {rows}
       </View>
 
       <View style={styles.select}>
@@ -179,6 +223,8 @@ const styles = StyleSheet.create({
   select: {
     marginTop: 20,
     width: 200,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCC',
   },
   dropdown: {
     width: 200,
@@ -200,5 +246,39 @@ const styles = StyleSheet.create({
     width: 200,
     marginTop: 20,
     backgroundColor: '#095188',
+  },
+  tcontainer: {
+    flex: 1,
+    marginTop: 60,
+  },
+  gray: {
+    backgroundColor: '#efefef'
+  },
+  row: {
+    height:40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomColor: '#ededed',
+    borderBottomWidth: 1
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height:55,
+    backgroundColor: '#ededed',
+    marginBottom:10
+  },
+  itemlist: {
+    marginTop: 10,
+    flexDirection: 'row',
+    height: 40,
+  },
+  itemlist_button: {
+    height: 30,
+    width: 30,
+    marginLeft: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor : '#FFF'
   },
 });

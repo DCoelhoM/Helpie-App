@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   Navigator,
   Image,
   Button,
@@ -12,6 +13,7 @@ import {
   AsyncStorage
 } from 'react-native';
 import DatePicker from 'react-native-datepicker';
+import ModalDropdown from 'react-native-modal-dropdown';
 
 var RequestsMenuPage = require('./RequestsMenuPage.js');
 
@@ -19,8 +21,7 @@ class CreateRequestPage extends Component {
   constructor(props) {
     super(props);
     this.state = {id: '', locations: [], title: '', description: '', deadline: new Date(), loc_id: ''}
-  }
-  componentWillMount() {
+  } componentWillMount() {
     try {
       AsyncStorage.getItem('id').then((value) => {
         this.setState({id: value});
@@ -44,11 +45,13 @@ class CreateRequestPage extends Component {
       }).then((response) => response.json())
       .then((responseJson) => {
         if (parseInt(responseJson.state) == 1){
-          locations = [];
+          locations_name = [];
           responseJson.locations.forEach((location) => {
             loc = {id: location.id,name: location.name};
-            locations.push(loc);
+            locations_name.push(location.name);
           });
+          console.log(locations_name);
+          this.setState({locations: locations_name});
           //TODO
         } else {
           Alert.alert('No locations found');
@@ -57,6 +60,12 @@ class CreateRequestPage extends Component {
     }catch(error) {
       console.error(error);
     }
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.locations != nextState.locations){
+      return true;
+    }
+    return false;
   }
 
   onDateChange = (date) => {
@@ -69,8 +78,8 @@ class CreateRequestPage extends Component {
   }
   render () {
     return (
-      <View style={styles.container} scrollEnabled={false}>
-
+      <ScrollView  ref='scrollView' keyboardDismissMode='interactive' style={styles.scrollView} contentContainerStyle={styles.contentContainerStyle}>
+      <View style={styles.container2}>
       <Image
       style={{width:108 ,height: 136}}
       source={require('../img/logowhite.png')}
@@ -95,6 +104,14 @@ class CreateRequestPage extends Component {
       placeholder='Description'
       maxLength={256}
       onChangeText={(text) => this.setState({name: text})}
+      />
+      </View>
+
+      <View style={styles.select}>
+      <ModalDropdown
+      options={this.state.locations}
+      textStyle={styles.dropdowntext}
+      dropdownStyle={styles.dropdown}
       />
       </View>
 
@@ -125,8 +142,8 @@ class CreateRequestPage extends Component {
       title="Back"
       />
       </View>
-
       </View>
+      </ScrollView>
     );
   }
 }
@@ -136,6 +153,16 @@ module.exports = CreateRequestPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#3197d6ff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 100,
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: '#3197d6ff',
+  },
+  container2: {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#3197d6ff',
@@ -148,6 +175,16 @@ const styles = StyleSheet.create({
   input: {
     width: 200,
     height: 40,
+  },
+  select: {
+    marginTop: 20,
+    width: 200,
+  },
+  dropdown: {
+    width: 200,
+  },
+  dropdowntext: {
+    color: '#FFF',
   },
   date_input: {
     marginTop: 20,

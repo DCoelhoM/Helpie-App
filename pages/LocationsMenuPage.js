@@ -57,7 +57,7 @@ class LocationsMenuPage extends Component {
       />
       </View>
 
-      <View style={styles.btn}>
+      <View style={styles.back}>
       <Button
       color='#3197d6ff'
       onPress={this._back.bind(this)}

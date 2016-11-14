@@ -72,8 +72,8 @@ class MyLocationsPage extends Component {
   }
   infolocation(name,id){
     Alert.alert(
-      "Location",
       name,
+      '',
       [
         {text: 'OK'},
         {text: 'Delete', onPress: () => {this.deletelocation(id)}, style: 'destructive'},

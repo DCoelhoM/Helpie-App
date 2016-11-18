@@ -9,44 +9,53 @@ import {
   Button,
   TextInput,
   Alert,
-  MapView
+  MapView,
 } from 'react-native';
-
-var RequestsMenuPage = require('./RequestsMenuPage.js');
+import Dimensions from 'Dimensions';
 
 class NearbyRequestsPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {initialPosition: 'unknown'};
   }
-  componentDidMount() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        var initialPosition = JSON.stringify(position);
-        this.setState({initialPosition});
-
-      },
-      (error) => alert(JSON.stringify(error)),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-
-    );
+  getrequests(){
+    try {
+      response = fetch('http://138.68.146.193:5000/listrequests', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: 1,
+        })
+      }).then((response) => response.json())
+      .then((responseJson) => {
+        if (parseInt(responseJson.state) == 1){
+          Alert.alert(responseJson.msg);
+        } else {
+          Alert.alert(responseJson.msg);
+        }
+      }).done();
+    }catch(error) {
+      console.error(error);
+    }
   }
   _back () {
     var navigator = this.props.navigator;
     navigator.replace({id: 'RequestsMenuPage'});
   }
   render () {
+    this.getrequests();
+    var w_width = Dimensions.get('window').width;
+    console.log(w_width);
     return (
       <View style={styles.container} scrollEnabled={false}>
       <Image
       style={{width:108 ,height: 136}}
       source={require('../img/logowhite.png')}
       />
-      <Text>
-      {this.state.initialPosition}
-      </Text>
       <MapView
-      style={{height: 200, width: 200}}
+      style={{height: w_width, width: w_width, marginTop:10}}
       showsUserLocation={true}
       />
 

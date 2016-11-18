@@ -80,7 +80,7 @@ class CreateRequestPage extends Component {
           title: this.state.title,
           description: this.state.description,
           list: i_list,
-          loc_id: 2,
+          loc_id: this.state.loc_id,
           deadline: this.state.deadline,
         })
       }).then((response) => response.json())
@@ -197,6 +197,7 @@ class CreateRequestPage extends Component {
       options={this.state.locations}
       textStyle={styles.dropdowntext}
       dropdownStyle={styles.dropdown}
+      onSelect={(idx, value) => {this.setState({loc_id: idx})}}
       />
       </View>
 

@@ -94,7 +94,6 @@ class RegisterPage extends Component {
 
       <View style={styles.inputContainer}>
       <TextInput
-      ref={component => this._name = component}
       style={styles.input}
       autoCapitalize={'none'}
       placeholder='Name'
@@ -105,7 +104,6 @@ class RegisterPage extends Component {
 
       <View style={styles.inputContainer}>
       <TextInput
-      ref={component => this._email = component}
       style={styles.input}
       autoCapitalize={'none'}
       placeholder='E-mail'
@@ -115,7 +113,6 @@ class RegisterPage extends Component {
 
       <View style={styles.inputContainer}>
       <TextInput
-      ref={component => this._pw = component}
       style={styles.input}
       secureTextEntry={true}
       placeholder='Password'
@@ -125,7 +122,6 @@ class RegisterPage extends Component {
 
       <View style={styles.inputContainer}>
       <TextInput
-      ref={component => this._cpw = component}
       style={styles.input}
       secureTextEntry={true}
       placeholder='Confirm Password'

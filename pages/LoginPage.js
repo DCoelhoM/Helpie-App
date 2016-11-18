@@ -82,7 +82,6 @@ class LoginPage extends Component {
       />
       <View style={styles.inputContainer}>
       <TextInput
-      ref={component => this._email = component}
       style={styles.input}
       autoCapitalize={'none'}
       placeholder='E-mail'
@@ -93,7 +92,6 @@ class LoginPage extends Component {
 
       <View style={styles.inputContainer}>
       <TextInput
-      ref={component => this._pw = component}
       style={styles.input}
       secureTextEntry={true}
       placeholder='Password'

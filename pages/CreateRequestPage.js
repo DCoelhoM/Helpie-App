@@ -21,8 +21,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 class CreateRequestPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {id: '', locations: [], title: '', description: '', deadline: new Date(), loc_id: '', items: ''};
-    this.setState({items : '0'});
+    this.state = {id: '', locations: [], n_items: '0',title: '', description: '', list: [], loc_id: '', deadline: new Date()};
   }
   componentWillMount() {
     try {
@@ -50,8 +49,7 @@ class CreateRequestPage extends Component {
         if (parseInt(responseJson.state) == 1){
           locations_name = [];
           responseJson.locations.forEach((location) => {
-            loc = {id: location.id,name: location.name};
-            locations_name.push(location.name);
+            locations_name[location.id]=location.name;
           });
           console.log(locations_name);
           this.setState({locations: locations_name});
@@ -64,18 +62,58 @@ class CreateRequestPage extends Component {
       console.error(error);
     }
   }
+  createrequest(){
+    let i_list = []
+    for (let item_i in this.state.list) {
+        console.log(item_i+': '+this.state.list[item_i]);
+        i_list.push({item: this.state.list[item_i]});
+    }
+    try {
+      response = fetch('http://138.68.146.193:5000/createrequest', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: this.state.id,
+          title: this.state.title,
+          description: this.state.description,
+          list: i_list,
+          loc_id: 2,
+          deadline: this.state.deadline,
+        })
+      }).then((response) => response.json())
+      .then((responseJson) => {
+        if (parseInt(responseJson.state) == 1){
+          Alert.alert(responseJson.msg);
+        } else {
+          Alert.alert(responseJson.msg);
+        }
+      }).done();
+    }catch(error) {
+      console.error(error);
+    }
+  }
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.locations != nextState.locations){
       return true;
     }
-    if (this.state.items != nextState.items){
+    if (this.state.n_items != nextState.n_items){
       return true;
     }
     return false;
   }
 
-  onDateChange = (date) => {
-    this.setState({deadline: date});
+  updateItemList(text, item) {
+    console.log(this.state.list);
+    l = this.state.list;
+    l[item]=text;
+    this.setState({list : l});
+  }
+
+  getItemList() {
+    console.log(this.state.list);
   }
 
   _back () {
@@ -83,27 +121,27 @@ class CreateRequestPage extends Component {
     navigator.replace({id: 'RequestsMenuPage'});
   }
   addItem(){
-    n = this.state.items;
+    let n = this.state.n_items;
     n++;
-    this.setState({ items: n });
+    this.setState({ n_items: n });
   }
   removeItem(){
-    n = this.state.items;
+    let n = this.state.n_items;
     n--;
-    this.setState({ items: n });
+    this.setState({n_items: n });
   }
   render () {
     let rows = [];
-    for(let i=0; i<this.state.items;i++){
+    for(let i=0; i<this.state.n_items;i++){
       rows.push(
         <View style={styles.inputContainer}>
         <TextInput
-        //ref={component => this._title = component}
+        key={"item_"+i}
         style={styles.input}
         autoCapitalize={'none'}
         placeholder={'Item '+(i+1)}
         maxLength={32}
-        //onChangeText={(text) => this.setState({name: text})}
+        onChangeText={(text) => this.updateItemList(text, "item_"+i)}
         />
         </View>
       );
@@ -118,28 +156,27 @@ class CreateRequestPage extends Component {
 
       <View style={styles.inputContainer}>
       <TextInput
-      ref={component => this._title = component}
       style={styles.input}
       autoCapitalize={'none'}
       placeholder='Title'
       maxLength={32}
-      onChangeText={(text) => this.setState({name: text})}
+      onChangeText={(text) => this.setState({title: text})}
       />
       </View>
 
       <View style={styles.inputContainer}>
       <TextInput
-      ref={component => this._desc = component}
       style={styles.input}
       autoCapitalize={'none'}
       placeholder='Description'
       maxLength={256}
-      onChangeText={(text) => this.setState({name: text})}
+      onChangeText={(text) => this.setState({description: text})}
       />
       </View>
 
+      <View style={styles.inputContainer}>
       <View style={styles.itemlist}>
-      <Text>Item List:</Text>
+      <Text style={styles.textil}>Item List:</Text>
       <TouchableHighlight onPress={ this.removeItem.bind(this) } style={styles.itemlist_button}>
       <Text>-</Text>
       </TouchableHighlight>
@@ -147,7 +184,11 @@ class CreateRequestPage extends Component {
       <Text>+</Text>
       </TouchableHighlight>
       </View>
-      <View style={styles.dropdown}>
+      </View>
+
+      <View style={styles.dropdown}
+      ref={component => this.itemList = component}
+      >
       {rows}
       </View>
 
@@ -174,7 +215,7 @@ class CreateRequestPage extends Component {
       <View style={styles.btn}>
       <Button
       color='#3197d6ff'
-      onPress={this._back.bind(this)}
+      onPress={this.createrequest.bind(this)}
       title="Create Request"
       />
       </View>
@@ -212,6 +253,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#3197d6ff',
   },
   inputContainer: {
+    width: 200,
     padding: 5,
     borderBottomWidth: 1,
     borderBottomColor: '#CCC',
@@ -274,11 +316,15 @@ const styles = StyleSheet.create({
     height: 40,
   },
   itemlist_button: {
-    height: 30,
-    width: 30,
+    height: 25,
+    width: 25,
     marginLeft: 10,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor : '#FFF'
+  },
+  textil: {
+    marginLeft: 0,
+    fontSize: 18,
   },
 });

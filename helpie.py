@@ -152,23 +152,36 @@ def deletelocation():
 
 
 @app.route('/createrequest', methods=["GET", "POST"])
-def savelocation():
+def createrequest():
     response = {}
     if request.method == "POST":
         data = json.loads(request.data)
         user_id = int(data['user_id'])
         title = data['title']
         desc = data['description']
-        loc_id = data['loc_id']
-        deadline = int(data['deadline'])
+        item_list = data['list']
+        loc_id = int(data['loc_id'])
+        deadline = data['deadline']
+
         #from datetime import datetime
         #datetime_object = datetime.strptime(deadline,'%Y-%m-%d %H:%M')
         #string = datetime.strftime('%Y-%m-%d %H:%M')
+
         db = MySQLdb.connect("localhost","root","academica","helpie")
         cursor = db.cursor()
-        sql_loc = "INSERT INTO requests(owner_id, title, description, loc_id, deadline) VALUES(%i,'%s','%s',%i,'%s')" % (user_id,desc,loc_id,deadline)
+
+        sql_loc = "INSERT INTO requests(owner_id, title, description, loc_id, deadline) VALUES(%i,'%s','%s',%i,'%s')" % (user_id,title,desc,loc_id,deadline)
         try:
             cursor.execute(sql_loc)
+            db.commit()
+
+            sql_confirm = "SELECT id FROM requests WHERE owner_id='%s' AND title='%s' AND description='%s' AND loc_id=%i AND deadline='%s' " % (user_id,title,desc,loc_id,deadline)
+            cursor.execute(sql_confirm)
+            results = cursor.fetchall()
+            req_id=results[0][0]
+            for i in range(len(item_list)):
+                sql_item = "INSERT INTO items(request_id,info) VALUES(%i,'%s')" % (req_id,item_list[i]['item'])
+                cursor.execute(sql_item)
             db.commit()
             response = { "state" : 1, "msg" : "Request created with success."}
         except:
@@ -179,8 +192,6 @@ def savelocation():
     else:
         response = {"state" : 0, "msg" : "Error."}
         return json.dumps(response)
-
-
 
 if __name__ == '__main__':
         app.run(host= '0.0.0.0',threaded=True, debug=True)

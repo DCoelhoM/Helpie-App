@@ -13,8 +13,12 @@ import {
   AsyncStorage,
   TouchableHighlight
 } from 'react-native';
+
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import {Sae} from 'react-native-textinput-effects';
 import DatePicker from 'react-native-datepicker';
 import ModalDropdown from 'react-native-modal-dropdown';
+import AwesomeButton from 'react-native-awesome-button';
 
 
 class CreateRequestPage extends Component {
@@ -133,49 +137,54 @@ class CreateRequestPage extends Component {
     let rows = [];
     for(let i=0; i<this.state.n_items;i++){
       rows.push(
-        <View style={styles.inputContainer}>
-        <TextInput
-        key={"item_"+i}
-        style={styles.input}
-        autoCapitalize={'none'}
-        placeholder={'Item '+(i+1)}
-        maxLength={32}
-        onChangeText={(text) => this.updateItemList(text, "item_"+i)}
+        <Sae
+          style={styles.input}
+          key={'item_'+i}
+          label={'Item '+(i+1)}
+          maxLength={32}
+          labelStyle={{color: '#f2f2f2'}}
+          iconClass={FontAwesomeIcon}
+          iconName={'pencil'}
+          iconColor={'white'}
+          autoCapitalize={'none'}
+          autoCorrect={false}
+          onChangeText={(text) =>  this.updateItemList(text, "item_"+i)}
         />
-        </View>
       );
     }
     return (
-      <ScrollView  ref='scrollView' keyboardDismissMode='interactive' style={styles.scrollView} contentContainerStyle={styles.contentContainerStyle}>
-      <View style={styles.container2}>
-      <Image
-      style={{width:108 ,height: 136}}
-      source={require('../img/logowhite.png')}
+      <ScrollView  ref='scrollView' keyboardDismissMode='interactive' style={styles.scrollView}>
+      <View style={styles.container}>
+
+      <Sae
+        style={styles.input}
+        label={'Title'}
+        maxLength={32}
+        labelStyle={{color: '#f2f2f2'}}
+        iconClass={FontAwesomeIcon}
+        iconName={'pencil'}
+        iconColor={'white'}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        onChangeText={(text) => this.setState({title: text})}
       />
 
-      <View style={styles.inputContainer}>
-      <TextInput
-      style={styles.input}
-      autoCapitalize={'none'}
-      placeholder='Title'
-      maxLength={32}
-      onChangeText={(text) => this.setState({title: text})}
+      <Sae
+        style={styles.input}
+        label={'Description'}
+        maxLength={256}
+        labelStyle={{color: '#f2f2f2'}}
+        iconClass={FontAwesomeIcon}
+        iconName={'pencil'}
+        iconColor={'white'}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        onChangeText={(text) => this.setState({description: text})}
       />
-      </View>
-
-      <View style={styles.inputContainer}>
-      <TextInput
-      style={styles.input}
-      autoCapitalize={'none'}
-      placeholder='Description'
-      maxLength={256}
-      onChangeText={(text) => this.setState({description: text})}
-      />
-      </View>
 
       <View style={styles.inputContainer}>
       <View style={styles.itemlist}>
-      <Text style={styles.textil}>Item List:</Text>
+      <Text style={styles.itemlist_text}>Item List:</Text>
       <TouchableHighlight onPress={ this.removeItem.bind(this) } style={styles.itemlist_button}>
       <Text>-</Text>
       </TouchableHighlight>
@@ -208,25 +217,40 @@ class CreateRequestPage extends Component {
       placeholder="Deadline"
       confirmBtnText="Confirm"
       cancelBtnText="Cancel"
-      onDateChange={(date) => {this.setState({deadline: date})}}
+      onDateChange={(date) => {this.setState({deadline: date}); this.props.date = date;}}
       />
       </View>
 
       <View style={styles.btn}>
-      <Button
-      color='#3197d6ff'
-      onPress={this.createrequest.bind(this)}
-      title="Create Request"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Create Request',
+          onPress: this.createrequest.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
 
-      <View style={styles.back}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._back.bind(this)}
-      title="Back"
+      <View style={styles.btn}>
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Back',
+          onPress: this._back.bind(this),
+          backgroundColor: '#095188',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
+
       </View>
       </ScrollView>
     );
@@ -236,32 +260,33 @@ class CreateRequestPage extends Component {
 module.exports = CreateRequestPage;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#3197d6ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 100,
-  },
   scrollView: {
     flex: 1,
     backgroundColor: '#3197d6ff',
   },
-  container2: {
+  container: {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#3197d6ff',
-  },
-  inputContainer: {
-    width: 200,
-    padding: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCC',
   },
   input: {
     width: 200,
     height: 40,
   },
+  btn: {
+    width: 200,
+    height: 40,
+    marginTop: 20,
+  },
+  buttonBackground: {
+    flex: 1,
+    height: 40,
+    borderRadius: 5
+  },
+  buttonLabel: {
+    color: '#3197d6ff'
+  },
+
   select: {
     marginTop: 20,
     width: 200,
@@ -279,19 +304,8 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
   },
-  btn: {
-    width: 200,
-    marginTop: 20,
-    backgroundColor: '#FFF',
-  },
-  back: {
-    width: 200,
-    marginTop: 20,
-    backgroundColor: '#095188',
-  },
-  tcontainer: {
+  inputtcontainer: {
     flex: 1,
-    marginTop: 60,
   },
   gray: {
     backgroundColor: '#efefef'
@@ -323,8 +337,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor : '#FFF'
   },
-  textil: {
+  itemlist_text: {
     marginLeft: 0,
     fontSize: 18,
-  },
+    color: '#f2f2f2',
+  }
 });

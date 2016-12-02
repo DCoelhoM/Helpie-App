@@ -9,11 +9,7 @@ import {
   Button,
 } from 'react-native';
 
-var MainMenuPage = require('./MainMenuPage.js');
-
-var CreateRequestPage = require('./CreateRequestPage.js');
-var NearbyRequestsPage = require('./NearbyRequestsPage.js');
-var MyRequestsPage = require('./MyRequestsPage.js');
+import AwesomeButton from 'react-native-awesome-button';
 
 class RequestsMenuPage extends Component {
   constructor(props) {
@@ -48,36 +44,65 @@ class RequestsMenuPage extends Component {
       />
 
       <View style={styles.btn}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._createrq.bind(this)}
-      title="Create Request"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Create Request',
+          onPress: this._createrq.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
 
       <View style={styles.btn}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._nearbyrq.bind(this)}
-      title="Nearby Requests"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Nearby Requests',
+          onPress: this._nearbyrq.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
 
       <View style={styles.btn}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._myrq.bind(this)}
-      title="My Requests"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'My Requests',
+          onPress: this._myrq.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
 
-      <View style={styles.back}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._back.bind(this)}
-      title="Back"
+      <View style={styles.btn}>
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Back',
+          onPress: this._back.bind(this),
+          backgroundColor: '#095188',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
+
 
       </View>
     );
@@ -95,12 +120,15 @@ const styles = StyleSheet.create({
   },
   btn: {
     width: 200,
+    height: 40,
     marginTop: 20,
-    backgroundColor: '#FFF',
   },
-  back: {
-    width: 200,
-    marginTop: 20,
-    backgroundColor: '#095188',
+  buttonBackground: {
+    flex: 1,
+    height: 40,
+    borderRadius: 5
   },
+  buttonLabel: {
+    color: '#3197d6ff'
+  }
 });

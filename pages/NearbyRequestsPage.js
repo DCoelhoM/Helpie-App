@@ -6,16 +6,48 @@ import {
   View,
   Navigator,
   Image,
-  Button,
-  TextInput,
   Alert,
-  MapView,
+  AsyncStorage,
 } from 'react-native';
 import Dimensions from 'Dimensions';
+
+import AwesomeButton from 'react-native-awesome-button';
+import MapView from 'react-native-maps';
 
 class NearbyRequestsPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {id: '', initialPosition: 'unknown', loc_name: '', latitude: 0.0, longitude: 0.0, requests: []};
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.latitude != nextState.latitude){
+      return true;
+    }
+    if (this.state.longitude != nextState.longitude){
+      return true;
+    }
+    if (this.state.requests != nextState.requests){
+      return true;
+    }
+    return false;
+  }
+  componentWillMount(){
+    AsyncStorage.getItem('id').then((value) => {
+      this.setState({id: value});
+      this.getrequests();
+    }).done();
+  }
+  componentDidMount(){
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        var initialPosition = JSON.stringify(position);
+        this.setState({initialPosition});
+        this.setState({latitude: position.coords.latitude});
+        this.setState({longitude: position.coords.longitude});
+      },
+      (error) => alert(JSON.stringify(error)),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+    );
   }
   getrequests(){
     try {
@@ -26,12 +58,13 @@ class NearbyRequestsPage extends Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: 1,
+          user_id: this.state.id,
         })
       }).then((response) => response.json())
       .then((responseJson) => {
         if (parseInt(responseJson.state) == 1){
-          Alert.alert(responseJson.msg);
+          this.setState({requests: responseJson.requests});
+          console.log(responseJson.requests);
         } else {
           Alert.alert(responseJson.msg);
         }
@@ -45,27 +78,58 @@ class NearbyRequestsPage extends Component {
     navigator.replace({id: 'RequestsMenuPage'});
   }
   render () {
-    this.getrequests();
-    var w_width = Dimensions.get('window').width;
-    console.log(w_width);
+    const w_width = Dimensions.get('window').width;
     return (
       <View style={styles.container} scrollEnabled={false}>
-      <Image
-      style={{width:108 ,height: 136}}
-      source={require('../img/logowhite.png')}
-      />
-      <MapView
-      style={{height: w_width, width: w_width, marginTop:10}}
-      showsUserLocation={true}
-      />
 
-      <View style={styles.back}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._back.bind(this)}
-      title="Back"
+      <View>
+      <MapView
+      style={{marginTop:20, height: w_width,width: w_width,}}
+      initialRegion={{
+        latitude: this.state.latitude,
+        longitude: this.state.longitude,
+        latitudeDelta: 2,
+        longitudeDelta: 2,
+      }}
+      >
+      {this.state.requests.map(marker => (
+        <MapView.Marker
+        coordinate={{
+          latitude: parseFloat(marker.latitude),
+          longitude: parseFloat(marker.longitude),
+        }}
+        title={marker.title}
+        description={marker.description}
+        onPress={() => {
+          Alert.alert(
+            marker.title,
+            JSON.stringify(marker.list),
+            [
+              {text: 'Accept', onPress: () => {}},
+              {text: 'Back'},
+            ]
+          );
+        }}
+        />
+      ))}
+      </MapView>
+      </View>
+
+      <View style={styles.btn}>
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Back',
+          onPress: this._back.bind(this),
+          backgroundColor: '#095188',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
+
       </View>
     );
   }
@@ -80,9 +144,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#3197d6ff',
   },
-  back: {
+  btn: {
     width: 200,
+    height: 40,
     marginTop: 20,
-    backgroundColor: '#095188',
   },
+  buttonBackground: {
+    flex: 1,
+    height: 40,
+    borderRadius: 5
+  },
+  buttonLabel: {
+    color: '#3197d6ff'
+  }
 });

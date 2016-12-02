@@ -16,7 +16,6 @@ var LoginPage = require('./pages/LoginPage.js');
 var RegisterPage = require('./pages/RegisterPage.js');
 var MainMenuPage = require('./pages/MainMenuPage.js');
 
-var ProfilePage = require('./pages/ProfilePage.js');
 var RequestsMenuPage = require('./pages/RequestsMenuPage.js');
 var LocationsMenuPage = require('./pages/LocationsMenuPage.js');
 
@@ -64,12 +63,6 @@ export default class Helpie extends Component {
     if (routeId === 'MainMenuPage') {
       return (
         <MainMenuPage
-        navigator={navigator}/>
-      );
-    }
-    if (routeId === 'ProfilePage') {
-      return (
-        <ProfilePage
         navigator={navigator}/>
       );
     }

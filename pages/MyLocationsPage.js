@@ -53,8 +53,7 @@ class MyLocationsPage extends Component {
         });
         if (parseInt(responseJson.state) == 1){
           responseJson.locations.forEach((location) => {
-            point = {longitude: parseFloat(location.longitude),latitude: parseFloat(location.latitude),title: location.name};
-            //, onFocus: () => {this.infolocation(location.name,location.id)}};
+            point = {longitude: parseFloat(location.longitude),latitude: parseFloat(location.latitude),title: location.name, event: () => {this.infolocation(location.name,location.id)}};
             loc_points.push(point);
           });
           this.state.annotations=loc_points;
@@ -135,6 +134,7 @@ class MyLocationsPage extends Component {
           latitude: marker.latitude,
           longitude: marker.longitude,
         }}
+        onPress={marker.event}
         title={marker.title}
         />
       ))}

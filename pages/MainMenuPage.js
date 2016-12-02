@@ -10,11 +10,7 @@ import {
   AsyncStorage,
 } from 'react-native';
 
-var LoginPage = require('./LoginPage.js');
-
-var ProfilePage = require('./ProfilePage.js');
-var RequestsMenuPage = require('./RequestsMenuPage.js');
-var LocationsMenuPage = require('./LocationsMenuPage.js');
+import AwesomeButton from 'react-native-awesome-button';
 
 class MainMenuPage extends Component {
   constructor(props) {
@@ -35,11 +31,6 @@ class MainMenuPage extends Component {
     }catch(error) {
       console.error(error);
     }
-  }
-
-  _profile () {
-    var navigator = this.props.navigator;
-    navigator.replace({id: 'ProfilePage'});
   }
 
   _requests () {
@@ -77,34 +68,47 @@ class MainMenuPage extends Component {
       </Text>
 
       <View style={styles.btn}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._profile.bind(this)}
-      title="Profile"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Requests',
+          onPress: this._requests.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
 
       <View style={styles.btn}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._requests.bind(this)}
-      title="Requests"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Locations',
+          onPress: this._locations.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
 
       <View style={styles.btn}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._locations.bind(this)}
-      title="Locations"
-      />
-      </View>
-
-      <View style={styles.logout}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._logout.bind(this)}
-      title="Logout"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Logout',
+          onPress: this._logout.bind(this),
+          backgroundColor: '#095188',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
 
@@ -124,12 +128,15 @@ const styles = StyleSheet.create({
   },
   btn: {
     width: 200,
+    height: 40,
     marginTop: 20,
-    backgroundColor: '#FFF',
   },
-  logout: {
-    width: 200,
-    marginTop: 20,
-    backgroundColor: '#095188',
+  buttonBackground: {
+    flex: 1,
+    height: 40,
+    borderRadius: 5
   },
+  buttonLabel: {
+    color: '#3197d6ff'
+  }
 });

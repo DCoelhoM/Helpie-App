@@ -6,13 +6,12 @@ import {
   View,
   Navigator,
   Image,
-  Button,
-  MapView,
   AsyncStorage,
   Alert,
 } from 'react-native';
 
-var LocationsMenuPage = require('./LocationsMenuPage.js');
+import AwesomeButton from 'react-native-awesome-button';
+import MapView from 'react-native-maps';
 
 class MyLocationsPage extends Component {
   constructor(props) {
@@ -54,14 +53,12 @@ class MyLocationsPage extends Component {
         });
         if (parseInt(responseJson.state) == 1){
           responseJson.locations.forEach((location) => {
-            point = {longitude: parseFloat(location.longitude),latitude: parseFloat(location.latitude),title: location.name, onFocus: () => {this.infolocation(location.name,location.id)}};
+            point = {longitude: parseFloat(location.longitude),latitude: parseFloat(location.latitude),title: location.name};
+            //, onFocus: () => {this.infolocation(location.name,location.id)}};
             loc_points.push(point);
           });
           this.state.annotations=loc_points;
           this.forceUpdate();
-          //TODO
-          console.log("LALAL2");
-          console.log(this.state.annotations);
         } else {
           Alert.alert('No locations found');
         }
@@ -108,6 +105,12 @@ class MyLocationsPage extends Component {
     navigator.replace({id: 'LocationsMenuPage'});
   }
   render () {
+    let lat = 0;
+    let lon = 0;
+    if (!(this.state.annotations[0] === undefined)){
+      lat = this.state.annotations[0].latitude;
+      lon = this.state.annotations[0].longitude;
+    }
     return (
       <View style={styles.container} scrollEnabled={false}>
 
@@ -116,17 +119,40 @@ class MyLocationsPage extends Component {
       source={require('../img/logowhite.png')}
       />
 
+      <View>
       <MapView
-      style={{height: 200, width: 200}}
-      followUserLocation={true}
-      annotations={this.state.annotations}
-      />
+      style={{marginTop:20, height: 200,width: 200,}}
+      initialRegion={{
+        latitude: lat,
+        longitude: lon,
+        latitudeDelta: 2,
+        longitudeDelta: 2,
+      }}
+      >
+      {this.state.annotations.map(marker => (
+        <MapView.Marker
+        coordinate={{
+          latitude: marker.latitude,
+          longitude: marker.longitude,
+        }}
+        title={marker.title}
+        />
+      ))}
+      </MapView>
+      </View>
 
       <View style={styles.btn}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._back.bind(this)}
-      title="Back"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Back',
+          onPress: this._back.bind(this),
+          backgroundColor: '#095188',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
 
@@ -146,7 +172,15 @@ const styles = StyleSheet.create({
   },
   btn: {
     width: 200,
+    height: 40,
     marginTop: 20,
-    backgroundColor: '#095188'
   },
+  buttonBackground: {
+    flex: 1,
+    height: 40,
+    borderRadius: 5
+  },
+  buttonLabel: {
+    color: '#3197d6ff'
+  }
 });

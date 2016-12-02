@@ -9,10 +9,7 @@ import {
   Button,
 } from 'react-native';
 
-var MainMenuPage = require('./MainMenuPage.js');
-
-var NewLocationPage = require('./NewLocationPage.js');
-var MyLocationsPage = require('./MyLocationsPage.js');
+import AwesomeButton from 'react-native-awesome-button';
 
 class LocationsMenuPage extends Component {
   constructor(props) {
@@ -42,26 +39,47 @@ class LocationsMenuPage extends Component {
       />
 
       <View style={styles.btn}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._saveloc.bind(this)}
-      title="Save Location"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Save Location',
+          onPress: this._saveloc.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
 
       <View style={styles.btn}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._myloc.bind(this)}
-      title="My Locations"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'My Locations',
+          onPress: this._myloc.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
 
-      <View style={styles.back}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._back.bind(this)}
-      title="Back"
+      <View style={styles.btn}>
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Back',
+          onPress: this._back.bind(this),
+          backgroundColor: '#095188',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
 
@@ -81,12 +99,15 @@ const styles = StyleSheet.create({
   },
   btn: {
     width: 200,
+    height: 40,
     marginTop: 20,
-    backgroundColor: '#FFF',
   },
-  back: {
-    width: 200,
-    marginTop: 20,
-    backgroundColor: '#095188',
+  buttonBackground: {
+    flex: 1,
+    height: 40,
+    borderRadius: 5
   },
+  buttonLabel: {
+    color: '#3197d6ff'
+  }
 });

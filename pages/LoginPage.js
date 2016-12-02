@@ -12,14 +12,15 @@ import {
   AsyncStorage,
 } from 'react-native'
 
-var RegisterPage = require('./RegisterPage.js');
+import AwesomeButton from 'react-native-awesome-button';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import {Sae} from 'react-native-textinput-effects';
 
-var MainMenuPage = require('./MainMenuPage.js');
 
 class LoginPage extends Component {
   constructor(props) {
     super(props);
-    this.state = { email: '', password: ''  };
+    this.state = { email: '', password: ''};
   }
   componentWillMount() {
       try {
@@ -80,38 +81,59 @@ class LoginPage extends Component {
       style={{width:108 ,height: 136}}
       source={require('../img/logowhite.png')}
       />
-      <View style={styles.inputContainer}>
-      <TextInput
-      style={styles.input}
-      autoCapitalize={'none'}
-      placeholder='E-mail'
-      maxLength={32}
-      onChangeText={(text) => this.setState({email: text})}
+      <Sae
+        style={styles.input}
+        ref={component => this._email = component}
+        label={'Email'}
+        labelStyle={{color: '#f2f2f2'}}
+        iconClass={FontAwesomeIcon}
+        iconName={'pencil'}
+        iconColor={'white'}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        onChangeText={(text) => this.setState({email: text})}
       />
-      </View>
-
-      <View style={styles.inputContainer}>
-      <TextInput
-      style={styles.input}
-      secureTextEntry={true}
-      placeholder='Password'
-      onChangeText={(text) => this.setState({password: text})}
+      <Sae
+        style={styles.input}
+        ref={component => this._pw = component}
+        label={'Password'}
+        labelStyle={{color: '#f2f2f2'}}
+        iconClass={FontAwesomeIcon}
+        iconName={'pencil'}
+        iconColor={'white'}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        secureTextEntry={true}
+        onChangeText={(text) => this.setState({password: text})}
       />
-      </View>
 
       <View style={styles.btn}>
       <View style={styles.signin}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._signin.bind(this)}
-      title="Sign In"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Sign In',
+          onPress: this._signin.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
       <View style={styles.signup}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._signup.bind(this)}
-      title="Sign Up"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Sign Up',
+          onPress: this._signup.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
       </View>
@@ -129,27 +151,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#3197d6ff',
   },
-  inputContainer: {
-    padding: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCC',
-  },
   input: {
     width: 200,
     height: 40,
   },
   btn: {
-    marginTop: 10,
+    marginTop: 20,
     flexDirection: 'row',
     height: 40,
   },
   signin: {
-    backgroundColor: '#FFF',
+    width: 95,
     marginRight: 5,
   },
   signup: {
-    backgroundColor: '#FFF',
+    width: 95,
     marginLeft: 5,
+  },
+  buttonBackground: {
+    flex: 1,
+    height: 40,
+    borderRadius: 5
+  },
+  buttonLabel: {
+    color: '#3197d6ff'
   }
 });
 

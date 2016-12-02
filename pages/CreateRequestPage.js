@@ -16,7 +16,6 @@ import {
 import DatePicker from 'react-native-datepicker';
 import ModalDropdown from 'react-native-modal-dropdown';
 
-//var RequestsMenuPage = require('./RequestsMenuPage.js');
 
 class CreateRequestPage extends Component {
   constructor(props) {

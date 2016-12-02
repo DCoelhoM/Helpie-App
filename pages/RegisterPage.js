@@ -11,7 +11,9 @@ import {
   Alert
 } from 'react-native';
 
-var LoginPage = require('./LoginPage.js');
+import AwesomeButton from 'react-native-awesome-button';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import {Sae} from 'react-native-textinput-effects';
 
 class RegisterPage extends Component {
   constructor(props) {
@@ -92,56 +94,83 @@ class RegisterPage extends Component {
       source={require('../img/logowhite.png')}
       />
 
-      <View style={styles.inputContainer}>
-      <TextInput
-      style={styles.input}
-      autoCapitalize={'none'}
-      placeholder='Name'
-      maxLength={16}
-      onChangeText={(text) => this.setState({name: text})}
+      <Sae
+        style={styles.input}
+        label={'Name'}
+        maxLength={16}
+        labelStyle={{color: '#f2f2f2'}}
+        iconClass={FontAwesomeIcon}
+        iconName={'pencil'}
+        iconColor={'white'}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        onChangeText={(text) => this.setState({name: text})}
       />
-      </View>
-
-      <View style={styles.inputContainer}>
-      <TextInput
-      style={styles.input}
-      autoCapitalize={'none'}
-      placeholder='E-mail'
-      onChangeText={(text) => this.setState({email: text})}
+      <Sae
+        style={styles.input}
+        label={'E-mail'}
+        labelStyle={{color: '#f2f2f2'}}
+        iconClass={FontAwesomeIcon}
+        iconName={'pencil'}
+        iconColor={'white'}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        onChangeText={(text) => this.setState({email: text})}
       />
-      </View>
-
-      <View style={styles.inputContainer}>
-      <TextInput
-      style={styles.input}
-      secureTextEntry={true}
-      placeholder='Password'
-      onChangeText={(text) => this.setState({password: text})}
+      <Sae
+        style={styles.input}
+        ref={component => this._pw = component}
+        label={'Password'}
+        labelStyle={{color: '#f2f2f2'}}
+        iconClass={FontAwesomeIcon}
+        iconName={'pencil'}
+        iconColor={'white'}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        secureTextEntry={true}
+        onChangeText={(text) => this.setState({password: text})}
       />
-      </View>
-
-      <View style={styles.inputContainer}>
-      <TextInput
-      style={styles.input}
-      secureTextEntry={true}
-      placeholder='Confirm Password'
-      onChangeText={(text) => this.setState({cpassword: text})}
+      <Sae
+        style={styles.input}
+        ref={component => this._pw = component}
+        label={'Confirm Password'}
+        labelStyle={{color: '#f2f2f2'}}
+        iconClass={FontAwesomeIcon}
+        iconName={'pencil'}
+        iconColor={'white'}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        secureTextEntry={true}
+        onChangeText={(text) => this.setState({cpassword: text})}
       />
-      </View>
 
 
       <View style={styles.register}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._register.bind(this)}
-      title="Register"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Register',
+          onPress: this._register.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
       <View style={styles.login}>
-      <Button
-      color='#3197d6ff'
-      onPress={this._login.bind(this)}
-      title="Login"
+      <AwesomeButton
+      backgroundStyle={styles.buttonBackground}
+      labelStyle={styles.buttonLabel}
+      states={{
+        default: {
+          text: 'Login',
+          onPress: this._login.bind(this),
+          backgroundColor: '#FFF',
+        }
+      }}
+      buttonState={'default'}
       />
       </View>
       </View>
@@ -158,23 +187,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#3197d6ff',
   },
-  inputContainer: {
-    padding: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCC',
-  },
   input: {
     width: 200,
     height: 40,
   },
   register: {
     width: 200,
-    marginTop: 10,
-    backgroundColor: '#FFF',
+    height: 40,
+    marginTop: 20,
   },
   login: {
     width: 200,
+    height: 40,
     marginTop: 10,
-    backgroundColor: '#FFF',
+  },
+  buttonBackground: {
+    flex: 1,
+    height: 40,
+    borderRadius: 5
+  },
+  buttonLabel: {
+    color: '#3197d6ff'
   }
 });

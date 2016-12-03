@@ -26,6 +26,8 @@ var MyRequestsPage = require('./pages/MyRequestsPage.js');
 var NewLocationPage = require('./pages/NewLocationPage.js');
 var MyLocationsPage = require('./pages/MyLocationsPage.js');
 
+var RequestInfoPage = require('./pages/RequestInfoPage.js');
+
 export default class Helpie extends Component {
   render() {
     return (
@@ -36,7 +38,10 @@ export default class Helpie extends Component {
         if (route.sceneConfig) {
           return route.sceneConfig;
         }
-        return Navigator.SceneConfigs.VerticalDownSwipeJump;
+        return {
+          ...Navigator.SceneConfigs.VerticalDownSwipeJump,
+          gestures: {}
+        };
       }}/>
     );
   }
@@ -107,6 +112,20 @@ export default class Helpie extends Component {
         <MyLocationsPage
         navigator={navigator}/>
       );
+    }
+    if (routeId === 'RequestInfoPage') {
+      return (
+        <RequestInfoPage
+        navigator={navigator}
+        reqid={navigator.reqid}
+        title={navigator.title}
+        description={navigator.description}
+        list={navigator.list}
+        deadline={navigator.deadline}
+        owner={navigator.owner}
+        feedback={navigator.feedback}
+        />
+      )
     }
   }
 }

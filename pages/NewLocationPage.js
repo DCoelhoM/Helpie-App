@@ -117,8 +117,8 @@ class NewLocationPage extends Component {
       initialRegion={{
         latitude: lat,
         longitude: lon,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
       }}
       >
       <MapView.Marker

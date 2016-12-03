@@ -53,7 +53,7 @@ class MyLocationsPage extends Component {
         });
         if (parseInt(responseJson.state) == 1){
           responseJson.locations.forEach((location) => {
-            point = {longitude: parseFloat(location.longitude),latitude: parseFloat(location.latitude),title: location.name, event: () => {this.infolocation(location.name,location.id)}};
+            point = {longitude: parseFloat(location.longitude),latitude: parseFloat(location.latitude),title: location.name, id:location.id, event: () => {this.infolocation(location.name,location.id)}};
             loc_points.push(point);
           });
           this.state.annotations=loc_points;
@@ -130,6 +130,7 @@ class MyLocationsPage extends Component {
       >
       {this.state.annotations.map(marker => (
         <MapView.Marker
+        key={marker.id}
         coordinate={{
           latitude: marker.latitude,
           longitude: marker.longitude,

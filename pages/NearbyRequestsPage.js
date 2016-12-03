@@ -101,14 +101,36 @@ class NearbyRequestsPage extends Component {
         title={marker.title}
         description={marker.description}
         onPress={() => {
-          Alert.alert(
+          var navigator = this.props.navigator;
+          navigator.reqid = marker.id;
+          navigator.title = marker.title;
+          navigator.description = marker.description;
+          navigator.list = marker.list;
+          navigator.deadline = marker.deadline;
+          navigator.owner = marker.owner;
+          navigator.feedback = marker.feedback;
+          navigator.replace({id: 'RequestInfoPage'});
+          /*Alert.alert(
             marker.title,
-            JSON.stringify(marker.list),
+            marker.description + "\n"
+            +
+            (marker.list.length > 0 ? (
+              "Item List: \n" + marker.list.map(item => (
+                " - " + item + " \n"
+              ))
+            ):"")
+            +
+            "Deadline: " + marker.deadline + "\n"
+            +
+            "Request by: " + marker.owner + "\n"
+            +
+            "Feedback: " + marker.feedback + "/10",
             [
               {text: 'Accept', onPress: () => {}},
               {text: 'Back'},
             ]
           );
+          */
         }}
         />
       ))}

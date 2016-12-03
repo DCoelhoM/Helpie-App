@@ -214,28 +214,38 @@ def listrequests():
                     title = row[2]
                     description = row[3]
                     loc_id = row[4]
+                    deadline = row[6]
+                    #Name
+                    sql_owner = "SELECT name FROM users WHERE id=%i" % (owner_id)
+                    cursor.execute(sql_owner)
+                    owner_result = cursor.fetchall()
+                    owner_name = owner_result[0][0]
+                    #Feedback
+                    sql_feedback = "SELECT feedback_owner FROM requests WHERE owner_id=%i AND state='ended'" % (owner_id)
+                    cursor.execute(sql_feedback)
+                    fb_result = cursor.fetchall()
+                    print fb_result
+                    feedback = 0
+                    if (len(fb_result)>0):
+                        for fb in fb_result:
+                            feedback += fb[0]
+                        feedback = feedback / len(fb_result)
+                    #Location
                     sql_loc = "SELECT * FROM locations WHERE id=%i" % (loc_id)
                     cursor.execute(sql_loc)
                     loc_result =  cursor.fetchall()
                     longitude = loc_result[0][3]
                     latitude = loc_result[0][4]
-                    deadline = row[6]
-                    print "1"
+                    #Items
                     sql_items = "SELECT * FROM items WHERE request_id=%i" % (r_id)
-                    print "2"
                     cursor.execute(sql_items)
-                    print "3"
                     items_result = cursor.fetchall()
-                    print "4"
-                    print items_result
                     items = []
                     for item in items_result:
                         items.append(item[2])
-                    print items
-                    requests.append({"id": r_id, "owner_id": owner_id, "title": title.decode('latin1'), "description": description.decode('latin1'), "list": items, "longitude": str(longitude), "latitude": str(latitude),"deadline": deadline.strftime('%Y-%m-%d %H:%M')})
-                    print requests
+
+                    requests.append({"id": r_id, "owner": owner_name, "feedback": feedback,"title": title.decode('latin1'), "description": description.decode('latin1'), "list": items, "longitude": str(longitude), "latitude": str(latitude),"deadline": deadline.strftime('%Y-%m-%d %H:%M')})
                 response = {"state" : 1, "msg" : "success","requests" : requests}
-                print response
             else:
                 response = { "state" : 0, "msg" : "No locations found."}
         except:

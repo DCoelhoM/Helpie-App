@@ -314,6 +314,61 @@ def listmyrequests():
         response = {"state" : 0, "msg" : "Error."}
         return json.dumps(response)
 
+@app.route('/listmyrequests_helper', methods=["GET", "POST"])
+def listmyrequests_helper():
+    response = {}
+    if request.method == "POST":
+        data = json.loads(request.data)
+        user_id = int(data['user_id'])
+        db = MySQLdb.connect("localhost","root","academica","helpie")
+        cursor = db.cursor()
+        sql_requests = "SELECT * FROM requests WHERE helper_id=%i" % (user_id)
+        try:
+            cursor.execute(sql_requests)
+            n_results = cursor.rowcount
+            if n_results>0:
+                results = cursor.fetchall()
+                requests = []
+                for row in results:
+                    r_id = row[0]
+                    owner_id = row[1]
+                    title = row[2]
+                    description = row[3]
+                    loc_id = row[4]
+                    created_at = row[5]
+                    deadline = row[6]
+                    state = row[7]
+                    feedback = row[9]
+                    feedback_helper = row[10]
+                    #Owner Name
+                    sql_owner = "SELECT name FROM users WHERE id=%i" % (owner_id)
+                    cursor.execute(sql_owner)
+                    owner_result = cursor.fetchall()
+                    owner_name = owner_result[0][0]
+                    #Location
+                    sql_loc = "SELECT * FROM locations WHERE id=%i" % (loc_id)
+                    cursor.execute(sql_loc)
+                    loc_result =  cursor.fetchall()
+                    loc_name = loc_result[0][2]
+                    #Items
+                    sql_items = "SELECT * FROM items WHERE request_id=%i" % (r_id)
+                    cursor.execute(sql_items)
+                    items_result = cursor.fetchall()
+                    items = []
+                    for item in items_result:
+                        items.append(item[2])
+                    requests.append({"id": r_id, "owner_id": owner_id, "owner_name": owner_name,"title": title.decode('latin1'), "description": description.decode('latin1'), "list": items, "location": loc_name, "created": created_at.strftime('%Y-%m-%d %H:%M') ,"deadline": deadline.strftime('%Y-%m-%d %H:%M'), "state": state, "feedback": feedback ,"feedback_helper": feedback_helper})
+                response = {"state" : 1, "msg" : "success","requests" : requests}
+            else:
+                response = { "state" : 0, "msg" : "No requests found."}
+        except:
+            response = { "state" : 0, "msg" : "Error accessing DB."}
+        db.close()
+        return json.dumps(response)
+    else:
+        response = {"state" : 0, "msg" : "Error."}
+        return json.dumps(response)
+
 @app.route('/acceptrequest', methods=["GET", "POST"])
 def acceptrequest():
     response = {}

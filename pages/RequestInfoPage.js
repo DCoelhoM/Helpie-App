@@ -7,17 +7,53 @@ import {
   Navigator,
   Image,
   ScrollView,
+  Alert,
+  AsyncStorage,
 } from 'react-native';
 
 import AwesomeButton from 'react-native-awesome-button';
 
 class RequestInfoPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {id: ''};
+  }
+  componentWillMount(){
+    AsyncStorage.getItem('id').then((value) => {
+      this.setState({id: value});
+    }).done();
+  }
   acceptreq(){
-
+    try {
+      response = fetch('http://138.68.146.193:5000/acceptrequest', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: this.state.id,
+          req_id: this.props.reqid,
+        })
+      }).then((response) => response.json())
+      .then((responseJson) => {
+        if (parseInt(responseJson.state) == 1){
+          Alert.alert('Request',responseJson.msg,[{text: 'Requests Menu', onPress: this._backmenu.bind(this)},]);
+        } else {
+          Alert.alert(responseJson.msg);
+        }
+      }).done();
+    }catch(error) {
+      console.error(error);
+    }
   }
   _back () {
     var navigator = this.props.navigator;
     navigator.replace({id: 'NearbyRequestsPage'});
+  }
+  _backmenu () {
+    var navigator = this.props.navigator;
+    navigator.replace({id: 'RequestsMenuPage'});
   }
   render () {
     return (

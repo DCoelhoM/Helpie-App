@@ -174,7 +174,6 @@ def createrequest():
         try:
             cursor.execute(sql_loc)
             db.commit()
-
             sql_confirm = "SELECT id FROM requests WHERE owner_id='%s' AND title='%s' AND description='%s' AND loc_id=%i AND deadline='%s' " % (user_id,title,desc,loc_id,deadline)
             cursor.execute(sql_confirm)
             results = cursor.fetchall()
@@ -224,7 +223,6 @@ def listrequests():
                     sql_feedback = "SELECT feedback_owner FROM requests WHERE owner_id=%i AND state='ended'" % (owner_id)
                     cursor.execute(sql_feedback)
                     fb_result = cursor.fetchall()
-                    print fb_result
                     feedback = 0
                     if (len(fb_result)>0):
                         for fb in fb_result:
@@ -255,6 +253,40 @@ def listrequests():
     else:
         response = {"state" : 0, "msg" : "Error."}
         return json.dumps(response)
+
+@app.route('/acceptrequest', methods=["GET", "POST"])
+def acceptrequest():
+    response = {}
+    if request.method == "POST":
+        data = json.loads(request.data)
+        user_id = int(data['user_id'])
+        req_id = int(data['req_id'])
+        db = MySQLdb.connect("localhost","root","academica","helpie")
+        cursor = db.cursor()
+        sql_request = "SELECT state FROM requests WHERE id=%i FOR UPDATE" % (req_id)
+        try:
+            print sql_request
+            cursor.execute(sql_request)
+            results = cursor.fetchall()
+            print "OLA"
+            print results[0][0]
+            if (results[0][0]=="active"):
+                sql_accept = "UPDATE requests SET state='accepted', helper_id=%i WHERE id=%i" %(user_id, req_id)
+                cursor.execute(sql_accept)
+                db.commit()
+                response = { "state" : 1, "msg" : "Request accepted with success."}
+            else:
+                db.rollback()
+                response = { "state" : 0, "msg" : "Request already accepted."}
+        except:
+            db.rollback()
+            response = { "state" : 0, "msg" : "Error accessing DB."}
+        db.close()
+        return json.dumps(response)
+    else:
+        response = {"state" : 0, "msg" : "Error."}
+        return json.dumps(response)
+
 
 if __name__ == '__main__':
         app.run(host= '0.0.0.0',threaded=True, debug=True)

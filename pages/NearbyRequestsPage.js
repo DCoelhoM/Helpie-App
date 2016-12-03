@@ -100,7 +100,7 @@ class NearbyRequestsPage extends Component {
         }}
         title={marker.title}
         description={marker.description}
-        onPress={() => {
+        onCalloutPress={() => {
           var navigator = this.props.navigator;
           navigator.reqid = marker.id;
           navigator.title = marker.title;

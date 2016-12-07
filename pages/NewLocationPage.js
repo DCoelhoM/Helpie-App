@@ -12,6 +12,7 @@ import {
   AsyncStorage,
 } from 'react-native';
 
+import {checkPermission} from 'react-native-android-permissions';
 import AwesomeButton from 'react-native-awesome-button';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {Sae} from 'react-native-textinput-effects';
@@ -38,6 +39,7 @@ class NewLocationPage extends Component {
     }).done();
   }
   componentDidMount(){
+    checkPermission("android.permission.ACCESS_FINE_LOCATION").then((result) => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         var initialPosition = JSON.stringify(position);
@@ -49,9 +51,12 @@ class NewLocationPage extends Component {
       (error) => alert(JSON.stringify(error)),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
-  }
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.watchID);
+
+    }, (result) => {
+              console.log("Not Granted!");
+                    console.log(result);
+                        
+    });
   }
   _save () {
     const name_min_length = 3;

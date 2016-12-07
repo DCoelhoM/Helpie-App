@@ -22,6 +22,7 @@ class NewLocationPage extends Component {
     super(props);
     this.state = {id: '', initialPosition: 'unknown', loc_name: '', latitude: 0.0, longitude: 0.0};
   }
+  watchID: ?number = null;
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.latitude != nextState.latitude){
       return true;
@@ -43,11 +44,14 @@ class NewLocationPage extends Component {
         this.setState({initialPosition});
         this.setState({latitude: position.coords.latitude});
         this.setState({longitude: position.coords.longitude});
-        this.forceUpdate();
+        //this.forceUpdate();
       },
       (error) => alert(JSON.stringify(error)),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
+  }
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
   }
   _save () {
     const name_min_length = 3;
@@ -71,7 +75,7 @@ class NewLocationPage extends Component {
             Alert.alert('Location',responseJson.msg,[{text: 'Locations Menu', onPress: this._back.bind(this)},]);
           } else {
             Alert.alert('Location',responseJson.msg);
-            this._loc.setNativeProps({text: ''});
+            //this._loc.setNativeProps({text: ''});
           }
         }).done();
       }catch(error) {
@@ -80,7 +84,7 @@ class NewLocationPage extends Component {
     }
     else {
       Alert.alert("Name too short.");
-      this._loc.setNativeProps({text: ''});
+      //this._loc.setNativeProps({text: ''});
     }
   }
   _back () {

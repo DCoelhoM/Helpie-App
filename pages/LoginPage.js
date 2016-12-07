@@ -62,8 +62,8 @@ class LoginPage extends Component {
           navigator.replace({id: 'MainMenuPage'});
         } else {
           Alert.alert('Register',responseJson.msg);
-          this._email.setNativeProps({text: ''});
-          this._pw.setNativeProps({text: ''});
+          //this._email.setNativeProps({text: ''});
+          //this._pw.setNativeProps({text: ''});
         }
       }).done();
     }catch(error) {

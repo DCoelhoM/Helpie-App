@@ -50,10 +50,10 @@ class RegisterPage extends Component {
                   Alert.alert('Register',responseJson.msg,[{text: 'Login', onPress: this._login.bind(this)},]);
                 } else {
                   Alert.alert('Register',responseJson.msg);
-                  this._name.setNativeProps({text: ''});
-                  this._email.setNativeProps({text: ''});
-                  this._pw.setNativeProps({text: ''});
-                  this._cpw.setNativeProps({text: ''});
+                  //this._name.setNativeProps({text: ''});
+                  //this._email.setNativeProps({text: ''});
+                  //this._pw.setNativeProps({text: ''});
+                  //this._cpw.setNativeProps({text: ''});
                 }
               }).done();
             }catch(error) {
@@ -62,24 +62,24 @@ class RegisterPage extends Component {
           }
           else {
             Alert.alert("Passwords don't match.");
-            this._pw.setNativeProps({text: ''});
-            this._cpw.setNativeProps({text: ''});
+            //this._pw.setNativeProps({text: ''});
+            //this._cpw.setNativeProps({text: ''});
           }
         }
         else {
           Alert.alert("Password too short.");
-          this._pw.setNativeProps({text: ''});
-          this._cpw.setNativeProps({text: ''});
+          //this._pw.setNativeProps({text: ''});
+          //this._cpw.setNativeProps({text: ''});
         }
       }
       else {
         Alert.alert("Invalid email.");
-        this._email.setNativeProps({text: ''});
+        //this._email.setNativeProps({text: ''});
       }
     }
     else {
       Alert.alert("Name too short.");
-      this._name.setNativeProps({text: ''});
+      //this._name.setNativeProps({text: ''});
     }
   }
   _login(){
